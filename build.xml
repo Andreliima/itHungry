@@ -10,10 +10,9 @@
 	<property name="dist.dir" value="${basedir}/dist"/>
 	<property name="conf.dir" value="${basedir}/etc"/>
 	<property name="doc.dir" value="${build.dir}/doc"/>
-	<property name="test.reports.dir" value="${build.dir}/reports/"/>
 	<property name="application.properties" value="${basedir}/application.properties"/>
     <property name="version.properties" value="${basedir}/version.properties"/>
-    <property name="hungry.jpg" value="${basedir}/hungry.jpg"/>
+    <property name="image.jpg" value="${basedir}/image.jpg"/>
 	
 
 	<!-- Definitions of classpath variants used for different tasks -->
@@ -45,7 +44,7 @@
 		<mkdir dir="${build.classes.dir}"/>
 		<copy todir="${build.dir}" file="${application.properties}"/>
         <copy todir="${build.dir}" file="${version.properties}"/>
-        <copy todir="${build.dir}" file="${hungry.jpg}"/>
+        <copy todir="${build.dir}" file="${image.jpg}"/>
 		
 		<javac
             srcdir="${src.dir}"
@@ -74,5 +73,7 @@
 	<target name="clean" description="Clean up build system results">
 		<delete dir="${build.dir}"/>
 	</target>
+	
+	
 
 </project>

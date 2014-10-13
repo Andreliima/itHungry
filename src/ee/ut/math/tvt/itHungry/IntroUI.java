@@ -13,6 +13,7 @@ import javax.swing.JFrame;
 import javax.swing.text.html.HTMLDocument;
 
 public class IntroUI extends JFrame {
+	
 	public IntroUI() {
 		int width = 600;
 		int height = 400;
@@ -20,14 +21,10 @@ public class IntroUI extends JFrame {
 		setSize(width, height);
 	    Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 	    setLocation((screen.width - width) / 2, (screen.height - height) / 2);
+	    this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    drawText();
 	    
-	    addWindowListener(new WindowAdapter() {
-	        @Override
-	        public void windowClosing(WindowEvent e) {
-	          System.exit(0);
-	        }
-	      });
+	    
 	}
 	
 	private void drawText() {
