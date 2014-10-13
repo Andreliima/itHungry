@@ -2,6 +2,8 @@ package ee.ut.math.tvt.itHungry;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -19,11 +21,18 @@ public class IntroUI extends JFrame {
 	    Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 	    setLocation((screen.width - width) / 2, (screen.height - height) / 2);
 	    drawText();
+	    
+	    addWindowListener(new WindowAdapter() {
+	        @Override
+	        public void windowClosing(WindowEvent e) {
+	          System.exit(0);
+	        }
+	      });
 	}
 	
 	private void drawText() {
 		try {
-			FileReader reader = new FileReader("Intro.html");
+			FileReader reader = new FileReader("application.properties");
 			JEditorPane editorPane = new JEditorPane();
 			editorPane.setContentType("text/html");
 			try {
