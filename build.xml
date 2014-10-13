@@ -12,7 +12,7 @@
 	<property name="doc.dir" value="${build.dir}/doc"/>
 	<property name="application.properties" value="${basedir}/application.properties"/>
     <property name="version.properties" value="${basedir}/version.properties"/>
-    <property name="image.jpg" value="${basedir}/image.jpg"/>
+    <property name="logo.jpg" value="${basedir}/logo.jpg"/>
     <property name="jar.dir" value="${build.dir}/jar"/>
     <property name="lib.dir" value="${basedir}/libs"/>
     <property name="build.lib.dir" value="${build.dir}/libs"/>
@@ -48,7 +48,7 @@
 		<mkdir dir="${build.classes.dir}"/>
 		<copy todir="${build.dir}" file="${application.properties}"/>
         <copy todir="${build.dir}" file="${version.properties}"/>
-        <copy todir="${build.dir}" file="${image.jpg}"/>
+        <copy todir="${build.dir}" file="${logo.jpg}"/>
 		
 		<javac
             srcdir="${src.dir}"
