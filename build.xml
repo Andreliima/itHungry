@@ -16,7 +16,6 @@
     <property name="jar.dir" value="${build.dir}/jar"/>
     <property name="lib.dir" value="${basedir}/libs"/>
     <property name="build.lib.dir" value="${build.dir}/libs"/>
-    <property name="jar.lib.dir" value="${jar.dir}/libs"/>
 	
 
 	<!-- Definitions of classpath variants used for different tasks -->
@@ -46,9 +45,7 @@
 	<target name="build" description="Build the system">
 		<mkdir dir="${build.dir}"/>
 		<mkdir dir="${build.classes.dir}"/>
-		<copy todir="${build.dir}" file="${application.properties}"/>
-        <copy todir="${build.dir}" file="${version.properties}"/>
-        <copy todir="${build.dir}" file="${logo.jpg}"/>
+		
 		
 		<javac
             srcdir="${src.dir}"
@@ -80,11 +77,14 @@
 	
 	<target name="dist" description="Create a separate JAR-file" depends="build">
 		<mkdir dir="${jar.dir}"/>
-        <mkdir dir="${jar.libs.dir}"/>
         <jar destfile="${jar.dir}/itHungry.jar" basedir="${build.classes.dir}">
             <manifest>
                 <attribute name="Main-Class" value="ee.ut.math.tvt.itHungry.Intro"/>
             </manifest>
+        	<zipgroupfileset dir="${lib.dir}" includes="*.jar" />
+        	<fileset dir="${basedir}" includes="application.properties" />
+        	<fileset dir="${basedir}" includes="version.properties" />
+        	<fileset dir="${basedir}" includes="logo.jpg" />
         </jar>
 	
 	</target>
