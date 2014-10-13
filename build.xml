@@ -14,15 +14,15 @@
     <property name="version.properties" value="${basedir}/version.properties"/>
     <property name="image.jpg" value="${basedir}/image.jpg"/>
     <property name="jar.dir" value="${build.dir}/jar"/>
-    <property name="lib.dir" value="${basedir}/lib"/>
-    <property name="build.lib.dir" value="${build.dir}/lib"/>
-    <property name="jar.lib.dir" value="${jar.dir}/lib"/>
+    <property name="lib.dir" value="${basedir}/libs"/>
+    <property name="build.lib.dir" value="${build.dir}/libs"/>
+    <property name="jar.lib.dir" value="${jar.dir}/libs"/>
 	
 
 	<!-- Definitions of classpath variants used for different tasks -->
 
 	<path id="compile.classpath">
-		<fileset dir="lib">
+		<fileset dir="libs">
 			<include name="*.jar"/>
 		</fileset>
 	</path>
@@ -31,7 +31,7 @@
 		<pathelement location="${build.classes.dir}"/>
 		<!-- configuration -->
 		<pathelement location="${conf.dir}"/>
-		<fileset dir="lib">
+		<fileset dir="libs">
 			<include name="*.jar"/>
 		</fileset>
 	</path>
@@ -80,7 +80,7 @@
 	
 	<target name="dist" description="Create a separate JAR-file" depends="build">
 		<mkdir dir="${jar.dir}"/>
-        <mkdir dir="${jar.lib.dir}"/>
+        <mkdir dir="${jar.libs.dir}"/>
         <jar destfile="${jar.dir}/itHungry.jar" basedir="${build.classes.dir}">
             <manifest>
                 <attribute name="Main-Class" value="ee.ut.math.tvt.itHungry.Intro"/>
