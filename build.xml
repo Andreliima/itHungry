@@ -13,6 +13,10 @@
 	<property name="application.properties" value="${basedir}/application.properties"/>
     <property name="version.properties" value="${basedir}/version.properties"/>
     <property name="image.jpg" value="${basedir}/image.jpg"/>
+    <property name="jar.dir" value="${build.dir}/jar"/>
+    <property name="lib.dir" value="${basedir}/lib"/>
+    <property name="build.lib.dir" value="${build.dir}/lib"/>
+    <property name="jar.lib.dir" value="${jar.dir}/lib"/>
 	
 
 	<!-- Definitions of classpath variants used for different tasks -->
@@ -73,6 +77,22 @@
 	<target name="clean" description="Clean up build system results">
 		<delete dir="${build.dir}"/>
 	</target>
+	
+	<target name="dist" description="Create a separate JAR-file" depends="build">
+		<mkdir dir="${jar.dir}"/>
+        <mkdir dir="${jar.lib.dir}"/>
+        <jar destfile="${jar.dir}/itHungry.jar" basedir="${build.classes.dir}">
+            <manifest>
+                <attribute name="Main-Class" value="ee.ut.math.tvt.itHungry.Intro"/>
+            </manifest>
+        </jar>
+	
+	</target>
+	
+	 <target name="jrun" description="Execute the JAR-file" depends="dist" >
+                <java jar="${jar.dir}/itHungry.jar" fork="yes"/>                      
+        </target>
+	
 	
 	
 
