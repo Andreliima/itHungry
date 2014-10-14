@@ -1,5 +1,9 @@
 package ee.ut.math.tvt.itHungry;
 
+import java.awt.BorderLayout;
+import javax.swing.BorderFactory; 
+import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,9 +16,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-
-//import com.jgoodies.forms.layout.CellConstraints;
-//import com.jgoodies.forms.layout.FormLayout;
 
 public class IntroUI extends JFrame {
 
@@ -35,6 +36,7 @@ public class IntroUI extends JFrame {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		loadProperties();
 		drawUI();
+		this.setLocationRelativeTo(null);
 	}
 
 	// Loading values from properties' files
@@ -43,7 +45,10 @@ public class IntroUI extends JFrame {
 		InputStream input = null;
 		InputStream input2 = null;
 		try {
-			input = new FileInputStream("application.properties");
+			input = getClass().getResourceAsStream("/application.properties");
+			if(input == null){
+				input = new FileInputStream("application.properties");
+			}
 			prop.load(input);
 
 			team = prop.getProperty("team");
@@ -53,7 +58,10 @@ public class IntroUI extends JFrame {
 			member2 = prop.getProperty("member2");
 			logo = prop.getProperty("logo");
 			
-			input2 = new FileInputStream("version.properties");
+			input2 = getClass().getResourceAsStream("/version.properties");
+			if(input2 == null){
+				input2 = new FileInputStream("version.properties");
+			}
 			prop.load(input2);
 			
 			version = prop.getProperty("build.number");
@@ -83,48 +91,58 @@ public class IntroUI extends JFrame {
 //				      "pref, 3dlu, pref, 3dlu, pref");   
 			
 			//CellConstraints cc = new CellConstraints();
-			
-			JPanel panel = new JPanel();
-			
-			add(panel);
+			this.setLayout(new BorderLayout());
 
 			JLabel teamLabel = new JLabel("Team: " + team);
+			teamLabel.setHorizontalAlignment(JLabel.CENTER);
 			JLabel leaderLabel = new JLabel("Leader: " + leader);
+			leaderLabel.setHorizontalAlignment(JLabel.CENTER);
 			JLabel emailLabel = new JLabel("E-mail: " + email);
+			emailLabel.setHorizontalAlignment(JLabel.CENTER);
 			JLabel member1Label = new JLabel("Member 1: " + member1);
+			member1Label.setHorizontalAlignment(JLabel.CENTER);
 			JLabel member2Label = new JLabel("Member 2: " + member2);
+			member2Label.setHorizontalAlignment(JLabel.CENTER);
 			JLabel versionLabel = new JLabel("Version: " + version);
+			versionLabel.setHorizontalAlignment(JLabel.CENTER);
 			
-			//teamLabel.setAlignmentX(LEFT_ALIGNMENT);
-			//leaderLabel.setAlignmentX(LEFT_ALIGNMENT);
+			versionLabel.setSize(this.getWidth(), 16);
 			
-			BufferedImage logoPicture = ImageIO.read(new File(logo));
-			JLabel logoLabel = new JLabel(new ImageIcon(logoPicture));
+			versionLabel.setVerticalAlignment(JLabel.CENTER);
+			JPanel sisu = new JPanel(new GridLayout(1,1));
+			sisu.setBorder(BorderFactory.createEmptyBorder(100, 0, 100, 0));
+			JPanel panel = new JPanel();
+			
+			this.add(sisu, BorderLayout.CENTER);
+		    this.add(versionLabel, BorderLayout.SOUTH);
+		    panel.setSize(400, this.getHeight() - versionLabel.getHeight());
+		    panel.setLayout(new GridLayout(0,1));
+			
 
+			ImageIcon ikoon;
+			if(getClass().getClassLoader().getResource(logo) != null){
+				ikoon = new ImageIcon(getClass().getClassLoader().getResource(logo));
+			}
+			else{
+				BufferedImage logoPicture = ImageIO.read(new File(logo));
+				ikoon = new ImageIcon(logoPicture);
+			}
+			JLabel logoLabel = new JLabel(ikoon);
 			
-			
-			//FormLayout layout = new FormLayout("right:pref, 7dlu","p, 1dlu");
-			
-//			panel.add(teamLabel, cc.xy(1,1));
-//			panel.add(leaderLabel, cc.xy(2, 3));
-//			panel.add(emailLabel, cc.xy(3, 3));
-//			panel.add(membersLabel, cc.xy(4, 3));
-//			panel.add(member1Label, cc.xy(5, 3));
-//			panel.add(member2Label, cc.xy(3, 2));
-//			panel.add(logoLabel, cc.xy(5,5));
-			
-			
-			
+			logoLabel.setMaximumSize(new Dimension(200, this.getHeight() - versionLabel.getHeight()));
+			logoLabel.setHorizontalAlignment(JLabel.CENTER);
+			logoLabel.setVerticalAlignment(JLabel.CENTER);
 			
 			panel.add(teamLabel);
 			panel.add(leaderLabel);
 			panel.add(emailLabel);
 			panel.add(member1Label);
 			panel.add(member2Label);
-			panel.add(logoLabel);
-			panel.add(versionLabel);
+			
+			sisu.add(panel);
+			sisu.add(logoLabel);
 
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
