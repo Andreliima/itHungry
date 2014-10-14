@@ -75,8 +75,26 @@
 		<delete dir="${build.dir}"/>
 	</target>
 	
+	<target name="revision" description="Increase revision.number">
+		<propertyfile  file="${version.properties}">
+		            <entry key="build.revision.number" type="int" operation="+" value="1"/>
+		</propertyfile>
+	</target>
+	
+	
+	<target name="buildnumber" description="Increase build.number">
+		<property file="${version.properties}"/>
+		<propertyfile  file="${version.properties}">
+			<entry key="build.number" default="0.0.0" value="${build.major.number}.${build.minor.number}.${build.revision.number}" type="string"/>
+		</propertyfile>
+	</target>
+	
 	<target name="dist" description="Create a separate JAR-file" depends="build">
 		<mkdir dir="${jar.dir}"/>
+		<antcall target="revision">
+		</antcall>
+		<antcall target="buildnumber">
+		</antcall>
         <jar destfile="${jar.dir}/itHungry.jar" basedir="${build.classes.dir}">
             <manifest>
                 <attribute name="Main-Class" value="ee.ut.math.tvt.itHungry.Intro"/>
@@ -85,8 +103,8 @@
         	<fileset dir="${basedir}" includes="application.properties" />
         	<fileset dir="${basedir}" includes="version.properties" />
         	<fileset dir="${basedir}" includes="logo.jpg" />
+        	<fileset dir="${basedir}" includes="log4j.properties" />
         </jar>
-	
 	</target>
 	
 	 <target name="jrun" description="Execute the JAR-file" depends="dist" >
