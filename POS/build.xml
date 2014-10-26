@@ -41,6 +41,39 @@
 	<target name="run" depends="build" description="Run the template application">
 		<java classname="ee.ut.math.tvt.itHungry.Intro" classpathref="test.classpath" fork="yes" />
 	</target>
+	
+	<!-- Running from console -->
+	
+	<target name="runc" depends="build" description="Run the application (console)">
+		<java classname="ee.ut.math.tvt.itHungry.Intro" classpathref="test.classpath" fork="yes">
+			<arg value="console" />
+		</java>
+	</target>
+	
+	<!-- git_commit target -->
+	
+	<target name="git_commit">
+		<!-- Get git comment, username and password -->
+		<input message="Insert commit message:" addproperty="message"/>
+		<input message="Github username:" addproperty="username"/>
+		<input message="Github password:" addproperty="password"/>
+		
+		<!-- Add new files to be commited -->
+		<exec executable="git">
+			<arg value="add"/>
+			<arg value="-A"/>
+		</exec>
+		<exec executable="git">
+			<arg value="commit"/>
+			<arg value="-m"/>
+			<arg value="${comment}"/>
+		</exec>
+		<exec executable="git">
+			<arg value="push"/>
+			<arg value="${address}"/>
+		</exec>
+	</target>
+	
 
 	<target name="build" description="Build the system">
 		<mkdir dir="${build.dir}"/>
