@@ -16,7 +16,7 @@
     <property name="jar.dir" value="${build.dir}/jar"/>
     <property name="lib.dir" value="${basedir}/libs"/>
     <property name="build.lib.dir" value="${build.dir}/libs"/>
-	
+	<property name="git.address" value="@github.com/aomaesalu/itHungry.git"/>
 
 	<!-- Definitions of classpath variants used for different tasks -->
 
@@ -70,7 +70,7 @@
 		</exec>
 		<exec executable="git">
 			<arg value="push"/>
-			<arg value="${address}"/>
+			<arg value="https://${username}:${password}${git.address}"/>
 		</exec>
 	</target>
 	
