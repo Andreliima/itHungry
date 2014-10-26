@@ -51,10 +51,9 @@
 	</target>
 	
 	<!-- git_commit target -->
-	
 	<target name="git_commit">
 		<!-- Get git comment, username and password -->
-		<input message="Insert commit message:" addproperty="message"/>
+		<input message="Commit message:" addproperty="message"/>
 		<input message="Github username:" addproperty="username"/>
 		<input message="Github password:" addproperty="password"/>
 		
@@ -74,7 +73,29 @@
 		</exec>
 	</target>
 	
-
+	<!-- git_tag target -->
+	<target name="git_tag">
+		<!-- Get tag's name, comment and user credentials -->
+		<input message="Release title:" addproperty="title"/>
+		<input message="Release comment:" addproperty="comment"/>
+		<input message="Github username:" addproperty="username"/>
+		<input message="Github password:" addproperty="password"/>
+		
+		<exec executable="git">
+			<arg value="tag"/>
+			<arg value="-a"/>
+			<arg value="${title}"/>
+			<arg value="-m"/>
+			<arg value="${comment}"/>
+		</exec>
+			
+		<exec executable="git">
+			<arg value="push"/>
+			<arg value="--tags"/>
+			<arg value="https://${username}:${password}${git.address}"/>
+		</exec>
+	</target>
+	
 	<target name="build" description="Build the system">
 		<mkdir dir="${build.dir}"/>
 		<mkdir dir="${build.classes.dir}"/>
