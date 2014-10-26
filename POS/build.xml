@@ -66,7 +66,7 @@
 		<exec executable="git">
 			<arg value="commit"/>
 			<arg value="-m"/>
-			<arg value="${comment}"/>
+			<arg value="${message}"/>
 		</exec>
 		<exec executable="git">
 			<arg value="push"/>
