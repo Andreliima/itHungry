@@ -11,6 +11,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.NoSuchElementException;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -110,13 +111,29 @@ public class StockTab {
    */
   public void addItemEventHandler() {
       // Add chosen item to the warehouse.
-      int quantity;
-      try {
-          quantity = Integer.parseInt(quantityField.getText());
-      } catch (NumberFormatException ex) {
-          quantity = 1;
-      }
-      model.getWarehouseTableModel().addItem(new StockItem(Long.parseLong(barCodeField.getText()), nameField.getText(), descriptionField.getText(), Double.parseDouble(priceField.getText()), quantity));
+	  if (nameField.getText() != "") {
+		  Long defaultNewBarCode = model.getWarehouseTableModel().getTableRows().get(model.getWarehouseTableModel().getRowCount()).getId() + 1;
+		  Long barCode;
+		  try {
+			  barCode = Long.parseLong(barCodeField.getText());
+		  } catch (NumberFormatException ex) {
+			  barCode = defaultNewBarCode;
+		  }
+		  try {
+			  StockItem item = model.getWarehouseTableModel().getItemById(barCode);
+			  if (item.getName() != nameField.getText()) {
+				  barCode = defaultNewBarCode;
+			  }
+		  } catch (NoSuchElementException ex) {
+		  }
+	      int quantity;
+	      try {
+	          quantity = Integer.parseInt(quantityField.getText());
+	      } catch (NumberFormatException ex) {
+	          quantity = 1;
+	      }
+	      model.getWarehouseTableModel().addItem(new StockItem(barCode, nameField.getText(), descriptionField.getText(), Double.parseDouble(priceField.getText()), quantity));
+	  }
   }
 
 
