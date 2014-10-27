@@ -111,7 +111,7 @@ public class StockTab {
    */
   public void addItemEventHandler() {
       // Add chosen item to the warehouse.
-	  if (nameField.getText() != "") {
+	  if (!nameField.getText().isEmpty()) {
 		  Long defaultNewBarCode = model.getWarehouseTableModel().getTableRows().get(model.getWarehouseTableModel().getRowCount() - 1).getId() + 1;
 		  Long barCode;
 		  try {
@@ -121,7 +121,7 @@ public class StockTab {
 		  }
 		  try {
 			  StockItem item = model.getWarehouseTableModel().getItemById(barCode);
-			  if (item.getName() != nameField.getText()) {
+			  if (!item.getName().equals(nameField.getText())) {
 				  barCode = defaultNewBarCode;
 			  }
 		  } catch (NoSuchElementException ex) {
