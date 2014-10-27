@@ -1,20 +1,34 @@
 package ee.ut.math.tvt.salessystem.ui.tabs;
 
+import ee.ut.math.tvt.salessystem.domain.data.SoldItem;
+import ee.ut.math.tvt.salessystem.domain.data.StockItem;
 import ee.ut.math.tvt.salessystem.ui.model.SalesSystemModel;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.table.JTableHeader;
 
 
 public class StockTab {
 
+  private JTextField barCodeField;
+  private JTextField nameField;
+  private JTextField descriptionField;
+  private JTextField priceField;
+  private JTextField quantityField;
   private JButton addItem;
 
   private SalesSystemModel model;
@@ -48,23 +62,61 @@ public class StockTab {
 
   // warehouse menu
   private Component drawStockMenuPane() {
+
+	// Create the panel
     JPanel panel = new JPanel();
+    panel.setLayout(new GridLayout(6, 2));
+    panel.setBorder(BorderFactory.createTitledBorder("New product"));
 
-    GridBagConstraints gc = new GridBagConstraints();
-    GridBagLayout gb = new GridBagLayout();
-
-    panel.setLayout(gb);
-
-    gc.anchor = GridBagConstraints.NORTHWEST;
-    gc.weightx = 0;
-
-    addItem = new JButton("Add");
-    gc.gridwidth = GridBagConstraints.RELATIVE;
-    gc.weightx = 1.0;
-    panel.add(addItem, gc);
-
-    panel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+    // Initialize the textfields
+    JTextField barCodeField = new JTextField();
+    JTextField nameField = new JTextField();
+    JTextField descriptionField = new JTextField();
+    JTextField priceField = new JTextField();
+    JTextField quantityField = new JTextField();
+    
+    // Add components to the panel
+    // Bar code
+    panel.add(new JLabel("Bar code:"));
+    panel.add(barCodeField);
+    // Name
+    panel.add(new JLabel("Name:"));
+    panel.add(nameField);
+    // Name
+    panel.add(new JLabel("Description:"));
+    panel.add(descriptionField);
+    // Price
+    panel.add(new JLabel("Price:"));
+    panel.add(priceField);
+    // Quantity
+    panel.add(new JLabel("Quantity:"));
+    panel.add(quantityField);
+    
+    // Create and add the button
+    JButton addItemButton = new JButton("Add");
+    addItemButton.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+            addItemEventHandler();
+        }
+    });
+    panel.add(new JLabel());
+    panel.add(addItemButton);
+    
     return panel;
+  }
+
+  /**
+   * Add new item to the warehouse.
+   */
+  public void addItemEventHandler() {
+      // Add chosen item to the warehouse.
+      int quantity;
+      try {
+          quantity = Integer.parseInt(quantityField.getText());
+      } catch (NumberFormatException ex) {
+          quantity = 1;
+      }
+      model.getWarehouseTableModel().addItem(new StockItem(Long.parseLong(barCodeField.getText()), nameField.getText(), descriptionField.getText(), Double.parseDouble(priceField.getText()), quantity));
   }
 
 
