@@ -70,11 +70,11 @@ public class StockTab {
     panel.setBorder(BorderFactory.createTitledBorder("New product"));
 
     // Initialize the textfields
-    JTextField barCodeField = new JTextField();
-    JTextField nameField = new JTextField();
-    JTextField descriptionField = new JTextField();
-    JTextField priceField = new JTextField();
-    JTextField quantityField = new JTextField();
+    barCodeField = new JTextField();
+    nameField = new JTextField();
+    descriptionField = new JTextField();
+    priceField = new JTextField();
+    quantityField = new JTextField();
     
     // Add components to the panel
     // Bar code
@@ -112,7 +112,7 @@ public class StockTab {
   public void addItemEventHandler() {
       // Add chosen item to the warehouse.
 	  if (nameField.getText() != "") {
-		  Long defaultNewBarCode = model.getWarehouseTableModel().getTableRows().get(model.getWarehouseTableModel().getRowCount()).getId() + 1;
+		  Long defaultNewBarCode = model.getWarehouseTableModel().getTableRows().get(model.getWarehouseTableModel().getRowCount() - 1).getId() + 1;
 		  Long barCode;
 		  try {
 			  barCode = Long.parseLong(barCodeField.getText());
@@ -126,13 +126,19 @@ public class StockTab {
 			  }
 		  } catch (NoSuchElementException ex) {
 		  }
+		  Double price;
+		  try {
+			  price = Double.parseDouble(priceField.getText());
+		  } catch (NumberFormatException ex) {
+			  price = 0.00;
+		  }
 	      int quantity;
 	      try {
 	          quantity = Integer.parseInt(quantityField.getText());
 	      } catch (NumberFormatException ex) {
 	          quantity = 1;
 	      }
-	      model.getWarehouseTableModel().addItem(new StockItem(barCode, nameField.getText(), descriptionField.getText(), Double.parseDouble(priceField.getText()), quantity));
+	      model.getWarehouseTableModel().addItem(new StockItem(barCode, nameField.getText(), descriptionField.getText(), price, quantity));
 	  }
   }
 
