@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.apache.log4j.Logger;
+
 import javax.swing.table.AbstractTableModel;
 
 import ee.ut.math.tvt.salessystem.domain.data.DisplayableItem;
@@ -18,6 +20,8 @@ public  class HistoryTableModel extends
 
     protected List<HistoryItem> rows;
     protected final String[] headers;
+    
+    private static final Logger log = Logger.getLogger(SalesSystemModel.class);
 
     public HistoryTableModel(final String[] headers) {
         this.headers = headers;
@@ -94,6 +98,10 @@ public  class HistoryTableModel extends
         }
         throw new NoSuchElementException();
     }
+    
+    public PurchaseInfoTableModel getTableAt(int pos){
+    	return rows.get(pos).getTable();
+    }
 
     public List<HistoryItem> getTableRows() {
         return rows;
@@ -101,6 +109,7 @@ public  class HistoryTableModel extends
     
 
     public void addSale(PurchaseInfoTableModel sale){
+//    	log.info(sale);
     	rows.add(new HistoryItem(sale));
     	this.fireTableDataChanged();
     }
