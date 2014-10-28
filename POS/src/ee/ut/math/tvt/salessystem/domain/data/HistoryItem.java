@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.List;
 
 public class HistoryItem implements Cloneable, DisplayableItem {
 
@@ -21,7 +22,8 @@ public class HistoryItem implements Cloneable, DisplayableItem {
     private double price;
     
     public HistoryItem(PurchaseInfoTableModel table) {
-        this.table = table;
+        this.table = new PurchaseInfoTableModel();
+        this.table.populateWithData(table.getTableRows());
         this.date = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
         this.time = new SimpleDateFormat("HH:mm:ss").format(new Date());
         this.totalCost = totalCost();
@@ -38,6 +40,11 @@ public class HistoryItem implements Cloneable, DisplayableItem {
     	  
     	  return cost;
       }
+    
+    
+    public PurchaseInfoTableModel getTable(){
+    	return table;
+    }
     
     
     public Long getId() {
@@ -87,6 +94,7 @@ public class HistoryItem implements Cloneable, DisplayableItem {
     public double getSum() {
         return price * ((double) quantity);
     }
+    
 
     
 }

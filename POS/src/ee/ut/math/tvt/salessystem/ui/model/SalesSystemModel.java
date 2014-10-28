@@ -33,6 +33,7 @@ public class SalesSystemModel {
         warehouseTableModel.populateWithData(domainController.loadWarehouseState());
 
     }
+    
 
     public StockTableModel getWarehouseTableModel() {
         return warehouseTableModel;
