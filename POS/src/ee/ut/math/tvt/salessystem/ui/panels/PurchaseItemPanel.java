@@ -3,14 +3,14 @@ package ee.ut.math.tvt.salessystem.ui.panels;
 import ee.ut.math.tvt.salessystem.domain.data.SoldItem;
 import ee.ut.math.tvt.salessystem.domain.data.StockItem;
 import ee.ut.math.tvt.salessystem.ui.model.SalesSystemModel;
+
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.util.NoSuchElementException;
+
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -20,6 +20,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
+
 import java.util.*;
 
 /**
@@ -30,7 +31,7 @@ public class PurchaseItemPanel extends JPanel {
     private static final long serialVersionUID = 1L;
 
     // Text field on the dialogPane
-    private JComboBox barCodeField;
+    private JComboBox<String> barCodeField;
     private JTextField quantityField;
     private JTextField priceField;
 
@@ -83,7 +84,7 @@ public class PurchaseItemPanel extends JPanel {
         panel.setBorder(BorderFactory.createTitledBorder("Product"));
 
         // Initialize the textfields
-        barCodeField = new JComboBox();
+        barCodeField = new JComboBox<String>();
         quantityField = new JTextField("1");
         priceField = new JTextField();
         
