@@ -217,6 +217,18 @@ public class PurchaseItemPanel extends JPanel {
         model.getCurrentPurchaseTableModel().fireTableDataChanged();
     }
 
+    
+    public float totalCost(){
+  	  float cost = 0;
+  	  List<SoldItem> list = model.getCurrentPurchaseTableModel().getTableRows();
+  	  for(SoldItem item : list){
+        	cost+= item.getPrice() * item.getQuantity();
+        }
+  	  
+  	  return cost;
+    }
+    
+    
     /**
      * Sets whether or not this component is enabled.
      */
@@ -231,6 +243,7 @@ public class PurchaseItemPanel extends JPanel {
      * Reset dialog fields.
      */
     public void reset() {
+        barCodeField.setText("");
         itemBox.setSelectedIndex(-1);
         quantityField.setText("1");
         priceField.setText("");

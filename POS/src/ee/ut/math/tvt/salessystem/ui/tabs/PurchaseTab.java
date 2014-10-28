@@ -4,16 +4,24 @@ import ee.ut.math.tvt.salessystem.domain.exception.VerificationFailedException;
 import ee.ut.math.tvt.salessystem.domain.controller.SalesDomainController;
 import ee.ut.math.tvt.salessystem.ui.model.SalesSystemModel;
 import ee.ut.math.tvt.salessystem.ui.panels.PurchaseItemPanel;
+import ee.ut.math.tvt.salessystem.domain.data.SoldItem;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import org.apache.log4j.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.JFormattedTextField;
+import javax.swing.JLabel;
+import java.text.NumberFormat;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 /**
  * Encapsulates everything that has to do with the purchase tab (the tab
@@ -34,6 +42,12 @@ public class PurchaseTab {
   private PurchaseItemPanel purchasePane;
 
   private SalesSystemModel model;
+  
+  private JFormattedTextField sumField;
+  
+  private JFormattedTextField payField;
+  
+  private JFormattedTextField changeField;
 
 
   public PurchaseTab(SalesDomainController controller,
@@ -165,7 +179,10 @@ public class PurchaseTab {
 
   /** Event handler for the <code>submit purchase</code> event. */
   protected void submitPurchaseButtonClicked() {
-    log.info("Sale complete");
+    int response =  JOptionPane.showConfirmDialog(null, paymentWindow(), "Payment", JOptionPane.OK_CANCEL_OPTION,
+            JOptionPane.PLAIN_MESSAGE);  
+	  
+	log.info("Sale complete");
     try {
       log.debug("Contents of the current basket:\n" + model.getCurrentPurchaseTableModel());
       domainController.submitCurrentPurchase(
@@ -179,7 +196,45 @@ public class PurchaseTab {
   }
 
 
+  private JPanel paymentWindow(){
+	  JPanel paneel = new JPanel(new GridLayout(3,2));
+	  
+	  
+	  paneel.add(new JLabel("Sum: "));
+	  
+	  sumField = new JFormattedTextField(NumberFormat.getNumberInstance());
+	  sumField.setEditable(false);
+	  sumField.setValue(purchasePane.totalCost());
+	  sumField.setHorizontalAlignment(JFormattedTextField.RIGHT);
+	  paneel.add(sumField);
+	  
+	  paneel.add(new JLabel("Cash: "));
+	  
+	  payField = new JFormattedTextField(NumberFormat.getNumberInstance());
+	  payField.setEditable(true);
+	  payField.setHorizontalAlignment(JFormattedTextField.RIGHT);
+	  paneel.add(payField);
+	  
+	  paneel.add(new JLabel("Change: "));
+	  
+	  changeField = new JFormattedTextField(NumberFormat.getNumberInstance());
+	  changeField.setEditable(false);
+	  changeField.setHorizontalAlignment(JFormattedTextField.RIGHT);
+	  paneel.add(changeField);
+	  
+	  payField.addPropertyChangeListener("value", new PropertyChangeListener() {
 
+          public void propertyChange(PropertyChangeEvent e) {
+              float nr1 = ((Number)sumField.getValue()).floatValue();
+              float nr2 = ((Number)payField.getValue()).floatValue();
+              changeField.setValue(Math.round((nr2-nr1)*100)/100);
+          }
+	  });
+	  
+	  return paneel;
+  }
+
+  
   /* === Helper methods that bring the whole purchase-tab to a certain state
    *     when called.
    */
