@@ -4,6 +4,8 @@ package ee.ut.math.tvt.salessystem.domain.data;
 import ee.ut.math.tvt.salessystem.ui.model.PurchaseInfoTableModel;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 public class HistoryItem implements Cloneable, DisplayableItem {
 
@@ -22,9 +24,20 @@ public class HistoryItem implements Cloneable, DisplayableItem {
         this.table = table;
         this.date = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
         this.time = new SimpleDateFormat("HH:mm:ss").format(new Date());
-        this.totalCost = 0;
+        this.totalCost = totalCost();
         
     }
+    
+    
+    public float totalCost(){
+    	  float cost = 0;
+    	  List<SoldItem> list = table.getTableRows();
+    	  for(SoldItem item : list){
+          	cost+= item.getPrice() * item.getQuantity();
+          }
+    	  
+    	  return cost;
+      }
     
     
     public Long getId() {
