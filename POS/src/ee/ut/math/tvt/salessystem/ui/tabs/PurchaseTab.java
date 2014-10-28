@@ -4,7 +4,12 @@ import ee.ut.math.tvt.salessystem.domain.exception.VerificationFailedException;
 import ee.ut.math.tvt.salessystem.domain.controller.SalesDomainController;
 import ee.ut.math.tvt.salessystem.ui.model.SalesSystemModel;
 import ee.ut.math.tvt.salessystem.ui.panels.PurchaseItemPanel;
+import ee.ut.math.tvt.salessystem.ui.model.PurchaseInfoTableModel;
 import ee.ut.math.tvt.salessystem.domain.data.SoldItem;
+import ee.ut.math.tvt.salessystem.domain.data.SoldItem;
+import ee.ut.math.tvt.salessystem.domain.data.StockItem;
+import ee.ut.math.tvt.salessystem.ui.model.SalesSystemModel;
+import ee.ut.math.tvt.salessystem.ui.model.SalesSystemTableModel;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
@@ -12,6 +17,8 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -22,6 +29,8 @@ import javax.swing.JLabel;
 import java.text.NumberFormat;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Encapsulates everything that has to do with the purchase tab (the tab
@@ -43,6 +52,8 @@ public class PurchaseTab {
 
   private SalesSystemModel model;
   
+  private HistoryTab historyTab;
+  
   private JFormattedTextField sumField;
   
   private JFormattedTextField payField;
@@ -51,10 +62,11 @@ public class PurchaseTab {
 
 
   public PurchaseTab(SalesDomainController controller,
-      SalesSystemModel model)
+      SalesSystemModel model, HistoryTab historyTab)
   {
     this.domainController = controller;
     this.model = model;
+    this.historyTab = historyTab;
   }
 
 
@@ -179,30 +191,45 @@ public class PurchaseTab {
 
   /** Event handler for the <code>submit purchase</code> event. */
   protected void submitPurchaseButtonClicked() {
-    int response =  JOptionPane.showConfirmDialog(null, paymentWindow(), "Payment", JOptionPane.OK_CANCEL_OPTION,
-            JOptionPane.PLAIN_MESSAGE);  
-	  
-	log.info("Sale complete");
-    try {
-      log.debug("Contents of the current basket:\n" + model.getCurrentPurchaseTableModel());
-      domainController.submitCurrentPurchase(
-          model.getCurrentPurchaseTableModel().getTableRows()
-      );
-      endSale();
-      model.getCurrentPurchaseTableModel().clear();
-    } catch (VerificationFailedException e1) {
-      log.error(e1.getMessage());
-    }
+	  int response =  JOptionPane.showConfirmDialog(null, paymentWindow(), "Payment", JOptionPane.OK_CANCEL_OPTION,
+			  JOptionPane.PLAIN_MESSAGE);  
+	  if(response == JOptionPane.YES_OPTION){ 
+		  log.info("Sale complete");
+		  try {
+			  log.debug("Contents of the current basket:\n" + model.getCurrentPurchaseTableModel());
+			  domainController.submitCurrentPurchase(
+					  model.getCurrentPurchaseTableModel().getTableRows()
+					  );
+			  
+		  } catch (VerificationFailedException e1) {
+			  log.error(e1.getMessage());
+		  }
+		  deductGoods();
+		  endSale();
+		  historyTab.getHistoryModel().addSale(model.getCurrentPurchaseTableModel());
+		  model.getCurrentPurchaseTableModel().clear();
+	  }
   }
 
 
+  private void deductGoods(){
+	  List<SoldItem> soldGoods = model.getCurrentPurchaseTableModel().getTableRows();
+	  for(SoldItem soldItem : soldGoods){
+		  StockItem stockItem = model.getWarehouseTableModel().getItemByName(soldItem.getName());
+		  stockItem.setQuantity(stockItem.getQuantity() - soldItem.getQuantity());
+	  }
+	  
+	  
+  }
+  
   private JPanel paymentWindow(){
 	  JPanel paneel = new JPanel(new GridLayout(3,2));
 	  
+	  NumberFormat defaultFormat = NumberFormat.getCurrencyInstance();
 	  
 	  paneel.add(new JLabel("Sum: "));
 	  
-	  sumField = new JFormattedTextField(NumberFormat.getNumberInstance());
+	  sumField = new JFormattedTextField(defaultFormat);
 	  sumField.setEditable(false);
 	  sumField.setValue(purchasePane.totalCost());
 	  sumField.setHorizontalAlignment(JFormattedTextField.RIGHT);
@@ -210,26 +237,45 @@ public class PurchaseTab {
 	  
 	  paneel.add(new JLabel("Cash: "));
 	  
-	  payField = new JFormattedTextField(NumberFormat.getNumberInstance());
+	  payField = new JFormattedTextField(defaultFormat);
 	  payField.setEditable(true);
 	  payField.setHorizontalAlignment(JFormattedTextField.RIGHT);
 	  paneel.add(payField);
 	  
 	  paneel.add(new JLabel("Change: "));
 	  
-	  changeField = new JFormattedTextField(NumberFormat.getNumberInstance());
+	  changeField = new JFormattedTextField(defaultFormat);
 	  changeField.setEditable(false);
 	  changeField.setHorizontalAlignment(JFormattedTextField.RIGHT);
 	  paneel.add(changeField);
 	  
-	  payField.addPropertyChangeListener("value", new PropertyChangeListener() {
-
-          public void propertyChange(PropertyChangeEvent e) {
-              float nr1 = ((Number)sumField.getValue()).floatValue();
-              float nr2 = ((Number)payField.getValue()).floatValue();
-              changeField.setValue(Math.round((nr2-nr1)*100)/100);
-          }
-	  });
+	  payField.getDocument().addDocumentListener(new DocumentListener() {
+	      public void changedUpdate(DocumentEvent documentEvent) {
+	          update();
+	        }
+	        public void insertUpdate(DocumentEvent documentEvent) {
+	          update();
+	        }
+	        public void removeUpdate(DocumentEvent documentEvent) {
+	          update();
+	        }
+	        
+	        private void update() {
+	        	 
+	        	  double nr1 = 0.0;
+	        	  double nr2 = 0.0;
+	        	  
+	        	  try{
+	        		  nr1 = ((Number)sumField.getValue()).doubleValue();
+	        		  nr2 = ((Number)payField.getValue()).doubleValue();
+	        		  
+	        	  }catch (NullPointerException ex){
+	        		  nr2 = 0.0;
+	        	  }finally{
+	        		  changeField.setValue(nr2-nr1);
+	        	  }
+	        }
+	      });
 	  
 	  return paneel;
   }
