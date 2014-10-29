@@ -62,7 +62,7 @@ public abstract class SalesSystemTableModel<T extends DisplayableItem> extends
  // search for item with the specified name
     public T getItemByName(final String name) {
         for (final T item : rows) {
-            if (item.getName() == name)
+            if (item.getName().equals(name))
                 return item;
         }
         throw new NoSuchElementException();

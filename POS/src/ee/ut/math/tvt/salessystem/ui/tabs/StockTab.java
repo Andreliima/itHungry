@@ -6,12 +6,17 @@ import ee.ut.math.tvt.salessystem.ui.model.SalesSystemModel;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.ComponentOrientation;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.NoSuchElementException;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+
+import org.apache.log4j.Logger;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -20,17 +25,50 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.JFormattedTextField;
 import javax.swing.table.JTableHeader;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingUtilities;
+import javax.swing.text.JTextComponent;
+import javax.swing.text.MaskFormatter;
+import javax.swing.JComponent;
+
+import java.lang.Runnable;
 
 
 public class StockTab {
 
-  private JTextField barCodeField;
+  private JSpinner barCodeField;
   private JTextField nameField;
   private JTextField descriptionField;
-  private JTextField priceField;
-  private JTextField quantityField;
+  private JSpinner priceField;
+  private JSpinner quantityField;
   private JButton addItem;
+  
+  private static final Logger log = Logger.getLogger(PurchaseTab.class);
+  
+  
+  SpinnerNumberModel priceNumberModel = new SpinnerNumberModel(
+  		new Double(0.0), // value
+          new Double(0.0), // min
+          new Double(1000000000.0), // max
+          new Double(0.01) // step
+          );
+
+  SpinnerNumberModel quantityNumberModel = new SpinnerNumberModel(
+	  		new Integer(1), // value
+	          new Integer(1), // min
+	          new Integer(10000000), // max
+	          new Integer(1) // step
+	          );
+  
+  SpinnerNumberModel idNumberModel = new SpinnerNumberModel(
+	  		new Integer(0), // value
+	          new Integer(0), // min
+	          new Integer(10000000), // max
+	          new Integer(1) // step
+	          );
 
   private SalesSystemModel model;
 
@@ -69,12 +107,56 @@ public class StockTab {
     panel.setLayout(new GridLayout(6, 2));
     panel.setBorder(BorderFactory.createTitledBorder("New product"));
 
-    // Initialize the textfields
-    barCodeField = new JTextField();
+    barCodeField = new JSpinner(idNumberModel);
     nameField = new JTextField();
     descriptionField = new JTextField();
-    priceField = new JTextField();
-    quantityField = new JTextField();
+    priceField = new JSpinner(priceNumberModel);
+    quantityField = new JSpinner(quantityNumberModel);
+    
+    ((JSpinner.DefaultEditor) priceField.getEditor()).getTextField().addFocusListener(new FocusAdapter() {
+        public void focusGained(FocusEvent evt) {
+        	SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                	try {
+                	    Thread.sleep(30);
+                	} catch (InterruptedException e) {}
+//                	log.info("focus priceField");
+                	((JSpinner.DefaultEditor) priceField.getEditor()).getTextField().selectAll();
+                }
+            });
+        }
+    });
+    
+    ((JSpinner.DefaultEditor) quantityField.getEditor()).getTextField().addFocusListener(new FocusAdapter() {
+        public void focusGained(FocusEvent evt) {
+        	SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                	try {
+                	    Thread.sleep(30);
+                	} catch (InterruptedException e) {}
+//                	log.info("focus quantityField");
+                	((JSpinner.DefaultEditor) quantityField.getEditor()).getTextField().selectAll();
+                }
+            });
+        }
+    });
+    
+    ((JSpinner.DefaultEditor) barCodeField.getEditor()).getTextField().addFocusListener(new FocusAdapter() {
+        public void focusGained(FocusEvent evt) {
+        	SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                	try {
+                	    Thread.sleep(30);
+                	} catch (InterruptedException e) {}
+//                	log.info("focus barCodeField");
+                	((JSpinner.DefaultEditor) barCodeField.getEditor()).getTextField().selectAll();
+                }
+            });
+        }
+    });
     
     // Add components to the panel
     // Bar code
@@ -105,41 +187,88 @@ public class StockTab {
     
     return panel;
   }
+  
+  private StockItem getStockItemByName(String name) {
+      try {
+//    	  log.info(model.getWarehouseTableModel());
+          return model.getWarehouseTableModel().getItemByName(name);
+      } catch (NumberFormatException ex) {
+//    	  log.info(ex.toString());
+          return null;
+      } catch (NoSuchElementException ex) {
+//    	  log.info(ex.toString());
+          return null;
+      }
+  }
+  
+  
+  private StockItem getStockItemById(Long id) {
+      try {
+//    	  log.info(model.getWarehouseTableModel());
+          return model.getWarehouseTableModel().getItemById(id);
+      } catch (NumberFormatException ex) {
+//    	  log.info(ex.toString());
+          return null;
+      } catch (NoSuchElementException ex) {
+//    	  log.info(ex.toString());
+          return null;
+      }
+  }
 
   /**
    * Add new item to the warehouse.
    */
   public void addItemEventHandler() {
-      // Add chosen item to the warehouse.
+	  // Add chosen item to the warehouse.
 	  if (!nameField.getText().isEmpty()) {
-		  Long defaultNewBarCode = model.getWarehouseTableModel().getTableRows().get(model.getWarehouseTableModel().getRowCount() - 1).getId() + 1;
+//		  log.info(nameField.getText());
+		  StockItem stockItem = getStockItemByName((String)nameField.getText());
+//		  log.info(stockItem);
+		  if (stockItem != null) {
+			  Long barCode;
+			  try {
+				  barCode = Long.valueOf((int)barCodeField.getValue());
+			  } catch (NumberFormatException ex) {
+				  barCode = -1L;
+			  }
+//			  log.info(barCode);
+			  if((stockItem.getId().equals(barCode) && stockItem.getName().equals(nameField.getText()) && stockItem.getPrice() == (double)priceField.getValue()) || 
+				(((int)barCodeField.getValue()) == 0 && stockItem.getName().equals(nameField.getText()) && stockItem.getPrice() == (double)priceField.getValue())){
+				  stockItem.setQuantity(stockItem.getQuantity() + (int)quantityField.getValue());
+			  }
+		  }
+		  else if(((int)barCodeField.getValue()) == 0){
+			  Long barCode = model.getWarehouseTableModel().getTableRows().get(model.getWarehouseTableModel().getRowCount() - 1).getId() + 1;
+			  Double price;
+			  try {
+				  price = (double)priceField.getValue();
+			  } catch (NumberFormatException ex) {
+				  price = 0.00;
+			  }
+			  int quantity;
+			  try {
+				  quantity = (int)quantityField.getValue();
+			  } catch (NumberFormatException ex) {
+				  quantity = 1;
+			  }
+			  model.getWarehouseTableModel().addItem(new StockItem(barCode, nameField.getText(), descriptionField.getText(), price, quantity));
+		  }
+	  }else if(((int)barCodeField.getValue()) != 0){
 		  Long barCode;
 		  try {
-			  barCode = Long.parseLong(barCodeField.getText());
+			  barCode = Long.valueOf((int)barCodeField.getValue());
 		  } catch (NumberFormatException ex) {
-			  barCode = defaultNewBarCode;
-		  }
-		  try {
-			  StockItem item = model.getWarehouseTableModel().getItemById(barCode);
-			  if (!item.getName().equals(nameField.getText())) {
-				  barCode = defaultNewBarCode;
+			  barCode = -1L;
+		  }		  
+		  StockItem stockItem = getStockItemById(barCode);
+//		  log.info(stockItem);
+		  if (stockItem != null) {
+			  if((stockItem.getId().equals(barCode) && stockItem.getPrice() == (double)priceField.getValue())) {
+				  stockItem.setQuantity(stockItem.getQuantity() + (int)quantityField.getValue());
 			  }
-		  } catch (NoSuchElementException ex) {
 		  }
-		  Double price;
-		  try {
-			  price = Double.parseDouble(priceField.getText());
-		  } catch (NumberFormatException ex) {
-			  price = 0.00;
-		  }
-	      int quantity;
-	      try {
-	          quantity = Integer.parseInt(quantityField.getText());
-	      } catch (NumberFormatException ex) {
-	          quantity = 1;
-	      }
-	      model.getWarehouseTableModel().addItem(new StockItem(barCode, nameField.getText(), descriptionField.getText(), price, quantity));
 	  }
+	  model.getWarehouseTableModel().fireTableDataChanged();
   }
 
 

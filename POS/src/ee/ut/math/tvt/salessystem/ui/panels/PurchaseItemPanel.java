@@ -21,6 +21,8 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 
 import java.util.*;
 
@@ -34,8 +36,18 @@ public class PurchaseItemPanel extends JPanel {
     // Text field on the dialogPane
     private JComboBox<String> itemBox;
     private JTextField barCodeField;
-    private JTextField quantityField;
+//    private JTextField quantityField;
     private JTextField priceField;
+    private JSpinner quantityField;
+    
+    
+    SpinnerNumberModel numberModel = new SpinnerNumberModel(
+    		new Integer(1), // value
+            new Integer(1), // min
+            new Integer(100), // max
+            new Integer(1) // step
+            );
+    
 
     private JButton addItemButton;
 
@@ -88,7 +100,7 @@ public class PurchaseItemPanel extends JPanel {
         // Initialize the textfields
         itemBox = new JComboBox<String>();
         barCodeField = new JTextField();
-        quantityField = new JTextField("1");
+        quantityField = new JSpinner(numberModel);
         priceField = new JTextField();
         
 
@@ -153,6 +165,8 @@ public class PurchaseItemPanel extends JPanel {
             priceField.setText(priceString);
             String idString = String.valueOf(stockItem.getId());
             barCodeField.setText(idString);
+            numberModel.setMaximum(stockItem.getQuantity());
+            quantityField.setValue(1);
         } else {
             reset();
         }
@@ -193,7 +207,7 @@ public class PurchaseItemPanel extends JPanel {
         if (stockItem != null) {
             int quantity;
             try {
-                quantity = Integer.parseInt(quantityField.getText());
+                quantity = (int) quantityField.getValue();
             } catch (NumberFormatException ex) {
                 quantity = 1;
             }
@@ -245,7 +259,7 @@ public class PurchaseItemPanel extends JPanel {
     public void reset() {
         barCodeField.setText("");
         itemBox.setSelectedIndex(-1);
-        quantityField.setText("1");
+        quantityField.setValue(1);
         priceField.setText("");
     }
 
