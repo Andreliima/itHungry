@@ -147,6 +147,15 @@ public class PurchaseItemPanel extends JPanel {
         return panel;
     }
     
+    public void updateData(){
+    	if(this.isEnabled()){
+    		StockItem stockItem = getStockItemByName();
+    		addData();
+    		itemBox.setSelectedIndex(model.getWarehouseTableModel().indexOf(stockItem));
+    		
+    	}
+    }
+    
     public void addData(){
     	itemBox.removeAllItems();
     	List<StockItem> list = model.getWarehouseTableModel().getTableRows();

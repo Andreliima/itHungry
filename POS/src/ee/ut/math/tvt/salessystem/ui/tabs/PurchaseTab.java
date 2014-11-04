@@ -366,6 +366,10 @@
                 return pane;
             }
             
+            public PurchaseItemPanel getPurchasePane(){
+            	return this.purchasePane;
+            }
+            
             
      
             /*

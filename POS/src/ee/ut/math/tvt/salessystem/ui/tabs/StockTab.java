@@ -71,9 +71,11 @@ public class StockTab {
 	          );
 
   private SalesSystemModel model;
+  private PurchaseTab purchaseTab;
 
-  public StockTab(SalesSystemModel model) {
+  public StockTab(SalesSystemModel model, PurchaseTab purchaseTab) {
     this.model = model;
+    this.purchaseTab = purchaseTab;
   }
 
   // warehouse stock tab - consists of a menu and a table
@@ -237,8 +239,24 @@ public class StockTab {
 				  stockItem.setQuantity(stockItem.getQuantity() + (int)quantityField.getValue());
 			  }
 		  }
-		  else if(((int)barCodeField.getValue()) == 0){
-			  Long barCode = model.getWarehouseTableModel().getTableRows().get(model.getWarehouseTableModel().getRowCount() - 1).getId() + 1;
+		  else {
+			  Long barCode;
+			  Long defaultNewBarCode = 0L;
+			  if(((int)barCodeField.getValue()) == 0)
+				  barCode = model.getWarehouseTableModel().getTableRows().get(model.getWarehouseTableModel().getRowCount() - 1).getId() + 1;
+			  else
+			  try {
+				  barCode = Long.valueOf((int)barCodeField.getValue());
+			  } catch (NumberFormatException ex) {
+				  barCode = defaultNewBarCode;
+			  }
+			  try {
+				  StockItem item = model.getWarehouseTableModel().getItemById(barCode);
+				  if (!item.getName().equals(nameField.getText())) {
+					  barCode = defaultNewBarCode;
+				  }
+			  } catch (NoSuchElementException ex) {
+			  }
 			  Double price;
 			  try {
 				  price = (double)priceField.getValue();
@@ -269,6 +287,8 @@ public class StockTab {
 		  }
 	  }
 	  model.getWarehouseTableModel().fireTableDataChanged();
+	  purchaseTab.getPurchasePane().updateData();
+	  
   }
 
 
