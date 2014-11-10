@@ -52,7 +52,7 @@ public class StockItem implements Cloneable, DisplayableItem {
 //        else log.info("Kirje on olemas");
         session.saveOrUpdate(this);
         session.getTransaction().commit();
-        session.flush();
+//        session.flush();
     }
     
     public StockItem(Long id, String name, String desc, double price, int quantity) {
@@ -67,7 +67,7 @@ public class StockItem implements Cloneable, DisplayableItem {
 //        else log.info("Kirjet on olemas");
         session.saveOrUpdate(this);
         session.getTransaction().commit();
-        session.flush();
+//        session.flush();
     }
 
     /**

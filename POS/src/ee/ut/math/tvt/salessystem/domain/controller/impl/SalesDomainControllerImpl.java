@@ -9,11 +9,13 @@ import ee.ut.math.tvt.salessystem.domain.data.SoldItem;
 import ee.ut.math.tvt.salessystem.domain.data.StockItem;
 import ee.ut.math.tvt.salessystem.domain.data.HistoryItem;
 import ee.ut.math.tvt.salessystem.util.HibernateUtil;
+
 import org.hibernate.Session;
 
 /**
  * Implementation of the sales domain controller.
  */
+@SuppressWarnings("unchecked")
 public class SalesDomainControllerImpl implements SalesDomainController {
 	
 	public void submitCurrentPurchase(List<SoldItem> goods) throws VerificationFailedException {
