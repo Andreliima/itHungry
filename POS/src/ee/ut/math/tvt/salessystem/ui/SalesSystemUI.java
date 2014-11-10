@@ -43,7 +43,7 @@ public class SalesSystemUI extends JFrame {
    * Constructs sales system GUI.
    * @param domainController Sales domain controller.
    */
-  public SalesSystemUI(SalesDomainController domainController) {
+  public SalesSystemUI(final SalesDomainController domainController) {
     this.domainController = domainController;
     this.model = new SalesSystemModel(domainController);
 
@@ -74,7 +74,7 @@ public class SalesSystemUI extends JFrame {
     addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosing(WindowEvent e) {
-//    	  domainController.endSession();
+    	  domainController.endSession();
     	  System.exit(0);
       }
     });
