@@ -1,51 +1,60 @@
 package ee.ut.math.tvt.salessystem.domain.data;
 
-
 import ee.ut.math.tvt.salessystem.ui.model.PurchaseInfoTableModel;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+@Entity
+@Table(name = "HISTORYITEM")
 public class HistoryItem implements Cloneable, DisplayableItem {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+	
     private PurchaseInfoTableModel table;
+    // TODO: Connect through SALE_ID
     
-    private String date;
-    private String time;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "DATE", nullable = false, updatable=false)
+    private Date date;
+
+	@Column(name = "TOTAL_COST")
     private double totalCost;
-    
-    private String name;
-    private Integer quantity;
-    private double price;
     
     public HistoryItem(PurchaseInfoTableModel table) {
         this.table = new PurchaseInfoTableModel();
         this.table.populateWithData(table.getTableRows());
-        this.date = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
-        this.time = new SimpleDateFormat("HH:mm:ss").format(new Date());
+        this.date = new Date();
         this.totalCost = totalCost();
         
     }
     
-    
     public float totalCost(){
-    	  float cost = 0;
-    	  List<SoldItem> list = table.getTableRows();
-    	  for(SoldItem item : list){
-          	cost+= item.getPrice() * item.getQuantity();
-          }
-    	  
-    	  return cost;
-      }
-    
+    	float cost = 0;
+    	List<SoldItem> list = table.getTableRows();
+    	for(SoldItem item : list){
+    		cost+= item.getPrice() * item.getQuantity();
+    	}
+    	return cost;
+    }
     
     public PurchaseInfoTableModel getTable(){
     	return table;
     }
-    
     
     public Long getId() {
         return id;
@@ -55,46 +64,25 @@ public class HistoryItem implements Cloneable, DisplayableItem {
         this.id = id;
     }
     
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
     
-    public String getTime() {
-        return time;
+    public String getDateString() {
+    	return new SimpleDateFormat("dd-MM-yyyy").format(date);
+    }
+    
+    public String getTimeString() {
+    	return new SimpleDateFormat("HH:mm:ss").format(date);
     }
     
     public double getCost() {
         return totalCost;
     }
-    
-    public String getName() {
-        return name;
-    }
-    
-    public void setName(String name) {
-        this.name = name;
-    }
-    
-    public double getPrice() {
-        return price;
-    }
-    
-    public void setPrice(double price) {
-        this.price = price;
-    }
-    
-    public Integer getQuantity() {
-        return quantity;
-    }
-    
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
 
-    public double getSum() {
-        return price * ((double) quantity);
-    }
-    
-
-    
+	@Override
+	public String getName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

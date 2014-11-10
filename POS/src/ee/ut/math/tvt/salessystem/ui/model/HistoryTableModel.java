@@ -38,9 +38,9 @@ public  class HistoryTableModel extends
     protected Object getColumnValue(HistoryItem item, int columnIndex) {
 		switch (columnIndex) {
 		case 0:
-			return item.getDate();
+			return item.getDateString();
 		case 1:
-			return item.getTime();
+			return item.getTimeString();
 		case 2:
 			return item.getCost();
 		}
@@ -55,8 +55,8 @@ public  class HistoryTableModel extends
 		buffer.append("\n");
 
 		for (final HistoryItem item : rows) {
-			buffer.append(item.getDate() + "\t");
-			buffer.append(item.getTime() + "\t");
+			buffer.append(item.getDateString() + "\t");
+			buffer.append(item.getTimeString() + "\t");
 			buffer.append(item.getCost() + "\t");
 			buffer.append("\n");
 		}
