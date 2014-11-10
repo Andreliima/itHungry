@@ -1,18 +1,37 @@
 package ee.ut.math.tvt.salessystem.domain.data;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import ee.ut.math.tvt.salessystem.util.HibernateUtil;
+import org.hibernate.Session;
+import org.apache.log4j.Logger;
+
 /**
  * Stock item. Corresponds to the Data Transfer Object design pattern.
  */
+@Entity
+@Table(name = "STOCKITEM")
 public class StockItem implements Cloneable, DisplayableItem {
 	
+	private static final Logger log = Logger.getLogger(StockItem.class);
+	
+	@Id
     private Long id;
-
+	
+	@Column(name = "NAME")
     private String name;
-
+	
+	@Column(name = "PRICE")
     private double price;
 
+	@Column(name = "DESCRIPTION")
     private String description;
     
+	@Column(name = "QUANTITY")
     private int quantity;
 
     /**
@@ -27,6 +46,13 @@ public class StockItem implements Cloneable, DisplayableItem {
         this.name = name;
         this.description = desc;
         this.price = price;
+        Session session = HibernateUtil.currentSession();
+        session.beginTransaction();
+//        if(session.get(this.name, id) == null) log.info("Kirjet ei leitud");
+//        else log.info("Kirje on olemas");
+        session.saveOrUpdate(this);
+        session.getTransaction().commit();
+        session.flush();
     }
     
     public StockItem(Long id, String name, String desc, double price, int quantity) {
@@ -35,6 +61,13 @@ public class StockItem implements Cloneable, DisplayableItem {
         this.description = desc;
         this.price = price;
         this.quantity = quantity;
+        Session session = HibernateUtil.currentSession();
+        session.beginTransaction();
+//        if(session.get(this.name, id) == null) log.info("Kirjet ei leitud");
+//        else log.info("Kirjet on olemas");
+        session.saveOrUpdate(this);
+        session.getTransaction().commit();
+        session.flush();
     }
 
     /**
@@ -81,6 +114,13 @@ public class StockItem implements Cloneable, DisplayableItem {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+        Session session = HibernateUtil.currentSession();
+        session.beginTransaction();
+//        if(session.get(this.name, id) == null) log.info("Kirjet ei leitud");
+//        else log.info("Kirjed on olemas");
+        session.saveOrUpdate(this);
+        session.getTransaction().commit();
+        session.flush();
     }
 
     public String toString() {
