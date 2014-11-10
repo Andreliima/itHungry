@@ -29,10 +29,10 @@ public class HistoryItem implements Cloneable, DisplayableItem {
     // TODO: Connect through SALE_ID
     
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "DATE", nullable = false, updatable=false)
+    @Column(name = "DATE", nullable = false, updatable = false)
     private Date date;
 
-	@Column(name = "TOTAL_COST")
+	@Column(name = "TOTALCOST")
     private double totalCost;
     
     public HistoryItem(PurchaseInfoTableModel table) {
