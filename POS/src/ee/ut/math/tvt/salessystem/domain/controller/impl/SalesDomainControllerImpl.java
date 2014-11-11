@@ -50,9 +50,7 @@ public class SalesDomainControllerImpl implements SalesDomainController {
 		} catch (Exception e){
 			session.getTransaction().rollback();
 		}
-	
-		model.getWarehouseTableModel().fireTableDataChanged();
-		
+			
 	}
 
 	public void cancelCurrentPurchase() throws VerificationFailedException {				
