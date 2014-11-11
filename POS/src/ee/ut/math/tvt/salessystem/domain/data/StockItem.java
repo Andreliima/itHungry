@@ -9,15 +9,17 @@ import javax.persistence.Table;
 import ee.ut.math.tvt.salessystem.util.HibernateUtil;
 import org.hibernate.Session;
 import org.apache.log4j.Logger;
+import java.io.Serializable;
 
 /**
  * Stock item. Corresponds to the Data Transfer Object design pattern.
  */
 @Entity
 @Table(name = "STOCKITEM")
-public class StockItem implements Cloneable, DisplayableItem {
+public class StockItem implements Cloneable, DisplayableItem, Serializable {
 	
 	private static final Logger log = Logger.getLogger(StockItem.class);
+	private static final long serialVersionUID = 1420672609912364066L;
 	
 	@Id
     private Long id;
@@ -53,6 +55,7 @@ public class StockItem implements Cloneable, DisplayableItem {
         session.saveOrUpdate(this);
         session.getTransaction().commit();
 //        session.flush();
+        HibernateUtil.closeSession();
     }
     
     public StockItem(Long id, String name, String desc, double price, int quantity) {
@@ -68,6 +71,7 @@ public class StockItem implements Cloneable, DisplayableItem {
         session.saveOrUpdate(this);
         session.getTransaction().commit();
 //        session.flush();
+        HibernateUtil.closeSession();
     }
 
     /**
@@ -121,6 +125,7 @@ public class StockItem implements Cloneable, DisplayableItem {
         session.saveOrUpdate(this);
         session.getTransaction().commit();
         session.flush();
+        HibernateUtil.closeSession();
     }
 
     public String toString() {

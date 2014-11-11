@@ -2,13 +2,18 @@ package ee.ut.math.tvt.salessystem.domain.data;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import java.io.Serializable;
+
 import ee.ut.math.tvt.salessystem.util.HibernateUtil;
+
 import org.hibernate.Session;
 
 /**
@@ -16,11 +21,17 @@ import org.hibernate.Session;
  */
 @Entity
 @Table(name = "SOLDITEM")
-public class SoldItem implements Cloneable, DisplayableItem {
+public class SoldItem implements Cloneable, DisplayableItem, Serializable {
+	
+	private static final long serialVersionUID = 1420672609912364060L;
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+	@ManyToOne
+    @JoinColumn(name="SALE_ID")
+    private HistoryItem historyItem;
 	
 	@ManyToOne
     @JoinColumn(name = "STOCKITEM_ID", nullable = false)
@@ -41,13 +52,28 @@ public class SoldItem implements Cloneable, DisplayableItem {
         this.price = stockItem.getPrice();
         this.quantity = quantity;
         
-        Session session = HibernateUtil.currentSession();
-        session.beginTransaction();
-        session.saveOrUpdate(this);
-        session.getTransaction().commit();
+    }
+    
+    public SoldItem(StockItem stockItem, HistoryItem historyItem, int quantity) {
+        this.stockItem = stockItem;
+        this.name = stockItem.getName();
+        this.price = stockItem.getPrice();
+        this.quantity = quantity;
+        this.historyItem = historyItem;
         
     }
     
+    public SoldItem() {
+    }
+    
+    public void setHistoryItem(HistoryItem historyItem) {
+        this.historyItem = historyItem;
+    }  
+    
+    public HistoryItem getHistoryItem() {
+        return this.historyItem;
+        
+    }  
     
     public Long getId() {
         return id;

@@ -9,14 +9,23 @@ import org.apache.log4j.Logger;
 import javax.swing.table.AbstractTableModel;
 
 import ee.ut.math.tvt.salessystem.domain.data.DisplayableItem;
+import ee.ut.math.tvt.salessystem.domain.data.SoldItem;
 import ee.ut.math.tvt.salessystem.domain.data.HistoryItem;
 import ee.ut.math.tvt.salessystem.ui.model.PurchaseInfoTableModel;
+import ee.ut.math.tvt.salessystem.util.HibernateUtil;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
+import org.hibernate.Session;
+
+@SuppressWarnings("unchecked")
 public  class HistoryTableModel extends
         AbstractTableModel {
 
     private static final long serialVersionUID = 1L;
+    
+    private long sale_id = 0L;
 
     protected List<HistoryItem> rows;
     protected final String[] headers;
@@ -25,7 +34,8 @@ public  class HistoryTableModel extends
 
     public HistoryTableModel(final String[] headers) {
         this.headers = headers;
-        rows = new ArrayList<HistoryItem>();
+        Session session = HibernateUtil.currentSession();
+        rows = session.createQuery("from HistoryItem").list();
     }
 
     /**
@@ -81,7 +91,7 @@ public  class HistoryTableModel extends
         return getColumnValue(rows.get(rowIndex), columnIndex);
     }
 
-    // search for item with the specified id
+/*    // search for item with the specified id
     public HistoryItem getItemById(final long id) {
         for (final HistoryItem item : rows) {
             if (item.getId() == id)
@@ -98,9 +108,9 @@ public  class HistoryTableModel extends
         }
         throw new NoSuchElementException();
     }
-    
-    public PurchaseInfoTableModel getTableAt(int pos){
-    	return rows.get(pos).getTable();
+*/    
+    public HistoryItem getTableAt(int pos){
+    	return rows.get(pos);
     }
 
     public List<HistoryItem> getTableRows() {
@@ -110,7 +120,29 @@ public  class HistoryTableModel extends
 
     public void addSale(PurchaseInfoTableModel sale){
 //    	log.info(sale);
-    	rows.add(new HistoryItem(sale));
+    	String date = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
+    	String time = new SimpleDateFormat("HH:mm:ss").format(new Date());
+    	HistoryItem item = new HistoryItem(Long.valueOf(rows.size()), date, time, sale.totalCost(), sale.getTableRows());
+    	Session session = HibernateUtil.currentSession();
+        session.beginTransaction();
+        session.saveOrUpdate(item);
+        session.getTransaction().commit();
+        HibernateUtil.closeSession();
+
+        session = HibernateUtil.currentSession();
+        session.beginTransaction();
+ 
+    	for(SoldItem soldItem : item.getTableRows()){
+        	soldItem.setHistoryItem(item);
+//        	item.addSoldItem(soldItem);
+        	session.saveOrUpdate(soldItem);
+        }
+    	
+        session.getTransaction().commit();
+        HibernateUtil.closeSession();
+        
+    	rows.add(item);
+    	sale_id++;
     	this.fireTableDataChanged();
     }
     

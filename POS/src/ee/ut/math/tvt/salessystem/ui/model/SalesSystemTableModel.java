@@ -86,6 +86,6 @@ public abstract class SalesSystemTableModel<T extends DisplayableItem> extends
     public int indexOf(T item){
     	return rows.indexOf(item);
     }
-    
+        
     
 }

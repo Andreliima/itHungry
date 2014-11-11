@@ -39,9 +39,34 @@ public class SalesDomainControllerImpl implements SalesDomainController {
 		Session session = HibernateUtil.currentSession();
 		
 		List<StockItem> dataset = session.createQuery("from StockItem").list();
+		
+		HibernateUtil.closeSession();
 				
 		return dataset;
 	}
+	
+	public List<SoldItem> loadSoldItems() {
+		// XXX mock implementation
+		Session session = HibernateUtil.currentSession();
+		
+		List<SoldItem> dataset = session.createQuery("from SoldItem").list();
+		
+		HibernateUtil.closeSession();
+				
+		return dataset;
+	}
+	
+	public List<HistoryItem> loadHistoryItems() {
+		// XXX mock implementation
+		Session session = HibernateUtil.currentSession();
+		
+		List<HistoryItem> dataset = session.createQuery("from HistoryItem").list();
+		
+		HibernateUtil.closeSession();
+				
+		return dataset;
+	}
+	
 /*
 	public List<HistoryItem> loadHistoryState(){
 		Session session = HibernateUtil.currentSession();

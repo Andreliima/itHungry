@@ -2,6 +2,7 @@ package ee.ut.math.tvt.salessystem.ui.tabs;
 
 import ee.ut.math.tvt.salessystem.domain.data.SoldItem;
 import ee.ut.math.tvt.salessystem.domain.data.StockItem;
+import ee.ut.math.tvt.salessystem.domain.data.HistoryItem;
 import ee.ut.math.tvt.salessystem.ui.model.SalesSystemModel;
 import ee.ut.math.tvt.salessystem.ui.model.HistoryTableModel;
 import ee.ut.math.tvt.salessystem.domain.data.HistoryItem;
@@ -56,7 +57,7 @@ public class HistoryTab {
     	return model;
     }
     
-    private JPanel historyWindow(PurchaseInfoTableModel historyTable){
+    private JPanel historyWindow(HistoryItem historyTable){
     	JPanel paneel = new JPanel();
     	JTable table = new JTable(historyTable);
 
@@ -107,7 +108,7 @@ public class HistoryTab {
                 Point p = me.getPoint();
                 int row = table.rowAtPoint(p);
                 if (me.getClickCount() == 2) {
-                	PurchaseInfoTableModel historyTable = model.getTableAt(row);
+                	HistoryItem historyTable = model.getTableAt(row);
 //                	log.info(row);
 //                	log.info(historyTable.getTableRows());
                 	JOptionPane.showConfirmDialog(null, historyWindow(historyTable), "Detailed order view", JOptionPane.PLAIN_MESSAGE,

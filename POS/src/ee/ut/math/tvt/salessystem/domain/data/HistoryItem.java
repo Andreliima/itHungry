@@ -2,49 +2,96 @@ package ee.ut.math.tvt.salessystem.domain.data;
 
 
 import ee.ut.math.tvt.salessystem.ui.model.PurchaseInfoTableModel;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.List;
+import java.io.Serializable;
+import javax.swing.table.AbstractTableModel;
 
-public class HistoryItem implements Cloneable, DisplayableItem {
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 
+import ee.ut.math.tvt.salessystem.util.HibernateUtil;
+
+import org.hibernate.Session;
+import org.apache.log4j.Logger;
+
+@Entity
+@Table(name = "HISTORYITEM")
+public class HistoryItem  extends AbstractTableModel implements Cloneable {
+
+	private static final Logger log = Logger.getLogger(PurchaseInfoTableModel.class);
+	
+	@Id
+//	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private PurchaseInfoTableModel table;
     
+    @OneToMany(mappedBy="historyItem")
+    private List<SoldItem> rows;
+    
+    @Column(name = "SALE_DATE")
     private String date;
+    
+    @Column(name = "SALE_TIME")
     private String time;
+    
+    @Column(name = "TOTALCOST")
     private double totalCost;
     
-    private String name;
-    private Integer quantity;
-    private double price;
+    @Transient
+    protected final String[] headers;
     
-    public HistoryItem(PurchaseInfoTableModel table) {
-        this.table = new PurchaseInfoTableModel();
-        this.table.populateWithData(table.getTableRows());
-        this.date = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
-        this.time = new SimpleDateFormat("HH:mm:ss").format(new Date());
-        this.totalCost = totalCost();
+    public HistoryItem(Long id, String date, String time, double totalCost) {
+        this.id = id;
+        this.date = date;
+        this.time = time;
+        this.totalCost = totalCost;
+        this.rows = new ArrayList<SoldItem>();
+        this.headers = new String[] { "Id", "Name", "Price", "Quantity", "Sum"};
+       
+        log.info(id);
+        log.info(date);
+        log.info(totalCost);
+    }
+    
+    public HistoryItem(Long id, String date, String time, double totalCost, List<SoldItem> rows) {
+    	this.id = id;
+        this.date = date;
+        this.time = time;
+        this.totalCost = totalCost;
+        this.rows = rows;
+        this.headers = new String[] { "Id", "Name", "Price", "Quantity", "Sum"};
         
+    }
+    
+    
+    public HistoryItem() {
+    	this.headers = new String[] { "Id", "Name", "Price", "Quantity", "Sum"};
     }
     
     
     public float totalCost(){
     	  float cost = 0;
-    	  List<SoldItem> list = table.getTableRows();
-    	  for(SoldItem item : list){
+    	  for(SoldItem item : rows){
           	cost+= item.getPrice() * item.getQuantity();
           }
     	  
     	  return cost;
       }
-    
-    
-    public PurchaseInfoTableModel getTable(){
-    	return table;
-    }
     
     
     public Long getId() {
@@ -67,34 +114,70 @@ public class HistoryItem implements Cloneable, DisplayableItem {
         return totalCost;
     }
     
-    public String getName() {
-        return name;
+    public void addSoldItem(SoldItem item){
+    	rows.add(item);
     }
     
-    public void setName(String name) {
-        this.name = name;
+    public List<SoldItem> getTableRows(){
+    	return this.rows;
     }
-    
-    public double getPrice() {
-        return price;
-    }
-    
-    public void setPrice(double price) {
-        this.price = price;
-    }
-    
-    public Integer getQuantity() {
-        return quantity;
-    }
-    
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
-
-    public double getSum() {
-        return price * ((double) quantity);
+    public void setTableRows(List<SoldItem> rows){
+    	this.rows = rows;
     }
     
 
+    
+	protected Object getColumnValue(SoldItem item, int columnIndex) {
+		switch (columnIndex) {
+		case 0:
+			return item.getId();
+		case 1:
+			return item.getName();
+		case 2:
+			return item.getPrice();
+		case 3:
+			return item.getQuantity();
+		case 4:
+			return item.getQuantity() * item.getPrice();
+		}
+		throw new IllegalArgumentException("Column index out of range");
+	}
+
+	@Override
+	public String toString() {
+		final StringBuffer buffer = new StringBuffer();
+
+		for (int i = 0; i < headers.length; i++)
+			buffer.append(headers[i] + "\t");
+		buffer.append("\n");
+
+		for (final SoldItem item : rows) {
+			buffer.append(item.getId() + "\t");
+			buffer.append(item.getName() + "\t");
+			buffer.append(item.getPrice() + "\t");
+			buffer.append(item.getQuantity() + "\t");
+			buffer.append(item.getSum() + "\t");
+			buffer.append("\n");
+		}
+
+		return buffer.toString();
+	}
+	
+	@Override
+    public String getColumnName(final int columnIndex) {
+        return headers[columnIndex];
+    }
+	
+	public int getColumnCount() {
+        return headers.length;
+    }
+
+    public int getRowCount() {
+        return rows.size();
+    }
+
+    public Object getValueAt(final int rowIndex, final int columnIndex) {
+        return getColumnValue(rows.get(rowIndex), columnIndex);
+    }
     
 }
