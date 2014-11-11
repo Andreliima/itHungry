@@ -40,20 +40,14 @@ import javax.swing.table.JTableHeader;
  * labelled "History" in the menu).
  */
 public class HistoryTab {
-    
-    // TODO - implement!
 	
-	 private static final Logger log = Logger.getLogger(SalesSystemModel.class);
+	private static final Logger log = Logger.getLogger(SalesSystemModel.class);
 	
 	private HistoryTableModel model;
 
     
-    public HistoryTab() {
-    	this.model = new HistoryTableModel(new String[]{"Date", "Time", "Total cost"});
-    }
-    
-    public HistoryTableModel getHistoryModel(){
-    	return model;
+    public HistoryTab(SalesSystemModel salesSystemModel) {
+    	this.model = salesSystemModel.getHistoryTableModel();
     }
     
     private JPanel historyWindow(PurchaseInfoTableModel historyTable){

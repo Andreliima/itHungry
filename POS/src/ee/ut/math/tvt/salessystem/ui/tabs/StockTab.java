@@ -48,7 +48,6 @@ public class StockTab {
   
   private static final Logger log = Logger.getLogger(PurchaseTab.class);
   
-  
   SpinnerNumberModel priceNumberModel = new SpinnerNumberModel(
   		new Double(0.0), // value
           new Double(0.0), // min

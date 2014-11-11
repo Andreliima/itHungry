@@ -42,7 +42,7 @@ public class SalesDomainControllerImpl implements SalesDomainController {
 				
 		return dataset;
 	}
-/*
+
 	public List<HistoryItem> loadHistoryState(){
 		Session session = HibernateUtil.currentSession();
 		
@@ -50,7 +50,7 @@ public class SalesDomainControllerImpl implements SalesDomainController {
 				
 		return dataset;
 	}
-*/	
+	
 	// End current database session.
 	public void endSession() {
 	    HibernateUtil.closeSession();

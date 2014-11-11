@@ -20,6 +20,8 @@ public class StockItem implements Cloneable, DisplayableItem {
 	private static final Logger log = Logger.getLogger(StockItem.class);
 	
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name="ID")
     private Long id;
 	
 	@Column(name = "NAME")

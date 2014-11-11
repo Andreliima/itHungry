@@ -43,34 +43,20 @@
             private static final Logger log = Logger.getLogger(PurchaseTab.class);
      
             private final SalesDomainController domainController;
-     
             private JButton newPurchase;
-     
             private JButton submitPurchase;
-     
             private JButton cancelPurchase;
-     
             private PurchaseItemPanel purchasePane;
-     
             private SalesSystemModel model;
-     
-            private HistoryTab historyTab;
-     
             private JFormattedTextField sumField;
-     
             private JTextField cashField;
-     
             private JFormattedTextField changeField;
-           
             private boolean validData;
-            
             private JButton acceptButton, cancel;
      
-            public PurchaseTab(SalesDomainController controller,
-                            SalesSystemModel model, HistoryTab historyTab) {
+            public PurchaseTab(SalesDomainController controller, SalesSystemModel model) {
                     this.domainController = controller;
                     this.model = model;
-                    this.historyTab = historyTab;
                     validData = false;
             }
      
@@ -225,8 +211,8 @@
                             }
                             deductGoods();
                             endSale();
-                            historyTab.getHistoryModel().addSale(
-                                            model.getCurrentPurchaseTableModel());
+                            model.getHistoryTableModel().addSale(
+                            		model.getCurrentPurchaseTableModel());
                             model.getCurrentPurchaseTableModel().clear();
                     }
                     } else {

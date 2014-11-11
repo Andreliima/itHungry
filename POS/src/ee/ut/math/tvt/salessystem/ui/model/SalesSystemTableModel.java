@@ -71,7 +71,6 @@ public abstract class SalesSystemTableModel<T extends DisplayableItem> extends
     public List<T> getTableRows() {
         return rows;
     }
-    
 
     public void clear() {
         rows = new ArrayList<T>();
@@ -86,6 +85,4 @@ public abstract class SalesSystemTableModel<T extends DisplayableItem> extends
     public int indexOf(T item){
     	return rows.indexOf(item);
     }
-    
-    
 }

@@ -10,21 +10,19 @@ import javax.swing.table.AbstractTableModel;
 
 import ee.ut.math.tvt.salessystem.domain.data.DisplayableItem;
 import ee.ut.math.tvt.salessystem.domain.data.HistoryItem;
+import ee.ut.math.tvt.salessystem.domain.data.StockItem;
 import ee.ut.math.tvt.salessystem.ui.model.PurchaseInfoTableModel;
 
-
-public  class HistoryTableModel extends
-        AbstractTableModel {
+public class HistoryTableModel extends SalesSystemTableModel<HistoryItem> {
 
     private static final long serialVersionUID = 1L;
 
     protected List<HistoryItem> rows;
-    protected final String[] headers;
     
     private static final Logger log = Logger.getLogger(SalesSystemModel.class);
 
-    public HistoryTableModel(final String[] headers) {
-        this.headers = headers;
+    public HistoryTableModel() {
+    	super(new String[]{"Date", "Time", "Total cost"});
         rows = new ArrayList<HistoryItem>();
     }
 
@@ -46,6 +44,16 @@ public  class HistoryTableModel extends
 		}
 		throw new IllegalArgumentException("Column index out of range");
 	}
+
+    public void addSale(PurchaseInfoTableModel sale){
+//    	log.info(sale);
+    	rows.add(new HistoryItem(sale));
+    	fireTableDataChanged();
+    }
+    
+    public PurchaseInfoTableModel getTableAt(int pos){
+    	return rows.get(pos).getTable();
+    }
     
     public String toString() {
 		final StringBuffer buffer = new StringBuffer();
@@ -60,69 +68,6 @@ public  class HistoryTableModel extends
 			buffer.append(item.getCost() + "\t");
 			buffer.append("\n");
 		}
-
 		return buffer.toString();
 	}
-
-    public int getColumnCount() {
-        return headers.length;
-    }
-
-    @Override
-    public String getColumnName(final int columnIndex) {
-        return headers[columnIndex];
-    }
-
-    public int getRowCount() {
-        return rows.size();
-    }
-
-    public Object getValueAt(final int rowIndex, final int columnIndex) {
-        return getColumnValue(rows.get(rowIndex), columnIndex);
-    }
-
-    // search for item with the specified id
-    public HistoryItem getItemById(final long id) {
-        for (final HistoryItem item : rows) {
-            if (item.getId() == id)
-                return item;
-        }
-        throw new NoSuchElementException();
-    }
-    
- // search for item with the specified name
-    public HistoryItem getItemByName(final String name) {
-        for (final HistoryItem item : rows) {
-            if (item.getName() == name)
-                return item;
-        }
-        throw new NoSuchElementException();
-    }
-    
-    public PurchaseInfoTableModel getTableAt(int pos){
-    	return rows.get(pos).getTable();
-    }
-
-    public List<HistoryItem> getTableRows() {
-        return rows;
-    }
-    
-
-    public void addSale(PurchaseInfoTableModel sale){
-//    	log.info(sale);
-    	rows.add(new HistoryItem(sale));
-    	this.fireTableDataChanged();
-    }
-    
-    public void clear() {
-        rows = new ArrayList<HistoryItem>();
-        this.fireTableDataChanged();
-    }
-
-    public void populateWithData(final List<HistoryItem> data) {
-        rows.clear();
-        rows.addAll(data);
-    }
-    
-    
 }

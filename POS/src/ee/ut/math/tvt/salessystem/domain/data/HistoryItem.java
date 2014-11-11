@@ -1,6 +1,7 @@
 package ee.ut.math.tvt.salessystem.domain.data;
 
 import ee.ut.math.tvt.salessystem.ui.model.PurchaseInfoTableModel;
+import ee.ut.math.tvt.salessystem.util.HibernateUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -17,16 +18,16 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.Session;
+
 @Entity
 @Table(name = "HISTORYITEM")
 public class HistoryItem implements Cloneable, DisplayableItem {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name="ID")
     private Long id;
-	
-    private PurchaseInfoTableModel table;
-    // TODO: Connect through SALE_ID
     
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DATE", nullable = false, updatable = false)
@@ -34,13 +35,19 @@ public class HistoryItem implements Cloneable, DisplayableItem {
 
 	@Column(name = "TOTALCOST")
     private double totalCost;
+	
+    private PurchaseInfoTableModel table;
+    // TODO: Connect through SALE_ID
     
     public HistoryItem(PurchaseInfoTableModel table) {
         this.table = new PurchaseInfoTableModel();
         this.table.populateWithData(table.getTableRows());
         this.date = new Date();
         this.totalCost = totalCost();
-        
+        Session session = HibernateUtil.currentSession();
+        session.beginTransaction();
+        session.saveOrUpdate(this);
+        session.getTransaction().commit();
     }
     
     public float totalCost(){
@@ -82,7 +89,6 @@ public class HistoryItem implements Cloneable, DisplayableItem {
 
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
+		return getDateString() + " " + getTimeString() + ": " + getCost();
 	}
 }

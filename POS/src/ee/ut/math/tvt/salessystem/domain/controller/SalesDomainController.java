@@ -27,7 +27,7 @@ public interface SalesDomainController {
      * @return List of ${link
      *         ee.ut.math.tvt.salessystem.domain.data.HistoryItem}s.
      */
-//    public List<HistoryItem> loadHistoryState();
+    public List<HistoryItem> loadHistoryState();
 
     // business processes
     /**

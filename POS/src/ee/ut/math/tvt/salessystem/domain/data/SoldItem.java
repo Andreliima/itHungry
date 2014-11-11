@@ -20,6 +20,7 @@ public class SoldItem implements Cloneable, DisplayableItem {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name="ID")
     private Long id;
 	
 	@ManyToOne
@@ -40,12 +41,10 @@ public class SoldItem implements Cloneable, DisplayableItem {
         this.name = stockItem.getName();
         this.price = stockItem.getPrice();
         this.quantity = quantity;
-        
         Session session = HibernateUtil.currentSession();
         session.beginTransaction();
         session.saveOrUpdate(this);
         session.getTransaction().commit();
-        
     }
     
     
