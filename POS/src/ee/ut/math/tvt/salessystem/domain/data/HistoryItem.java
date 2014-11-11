@@ -36,17 +36,16 @@ public class HistoryItem implements Cloneable, DisplayableItem {
     @Column(name = "DATE")
     private Date date;	
     
+    /*
     @OneToMany(mappedBy = "historyItem")
     private Set<SoldItem> soldItems;
-    
+    */
 	
 	@Column(name = "TOTALCOST")
     private double totalCost;
 	
 	@Transient
 	private PurchaseInfoTableModel table;
-    // TODO: Connect through SALE_ID
-    
 	
 	
     public HistoryItem(Long id, Date date, double totalCost) {
@@ -54,6 +53,13 @@ public class HistoryItem implements Cloneable, DisplayableItem {
     	this.date = date;
     	this.totalCost = totalCost;
     }
+    
+    
+    public HistoryItem(double totalCost) {
+    	this.date = new Date();
+    	this.totalCost = totalCost;
+    }
+    
     public HistoryItem()
     {
     	
@@ -104,12 +110,7 @@ public class HistoryItem implements Cloneable, DisplayableItem {
     public double getCost() {
         return totalCost;
     }
-    public Set<SoldItem> getSoldItems() {
-		return soldItems;
-	}
-	public void setSoldItems(Set<SoldItem> soldItems) {
-		this.soldItems = soldItems;
-	}
+    
 	public double getTotalCost() {
 		return totalCost;
 	}

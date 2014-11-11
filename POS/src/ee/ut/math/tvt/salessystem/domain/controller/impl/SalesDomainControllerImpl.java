@@ -11,19 +11,48 @@ import ee.ut.math.tvt.salessystem.domain.data.HistoryItem;
 import ee.ut.math.tvt.salessystem.util.HibernateUtil;
 
 import org.hibernate.Session;
+import org.hibernate.dialect.FirebirdDialect;
 
+import ee.ut.math.tvt.salessystem.ui.model.SalesSystemModel;
 /**
  * Implementation of the sales domain controller.
  */
 @SuppressWarnings("unchecked")
 public class SalesDomainControllerImpl implements SalesDomainController {
-	
+	private SalesSystemModel model;
 	private Session session = HibernateUtil.currentSession();
 	public void submitCurrentPurchase(List<SoldItem> goods) throws VerificationFailedException {
-		// Let's assume we have checked and found out that the buyer is underaged and
-		// cannot buy chupa-chups
-		//throw new VerificationFailedException("Underaged!");
-		// XXX - Save purchase
+		
+		
+		session.beginTransaction();
+		try {
+			
+
+		double sum = 0;
+		
+		for (SoldItem soldItem : goods) {
+			sum += soldItem.getSum();
+		}
+		
+		HistoryItem historyItem = new HistoryItem(sum);
+		
+		session.saveOrUpdate(historyItem);
+		
+		Long saleId = historyItem.getId();
+		
+		for (SoldItem soldItem : goods) {
+			soldItem.setSaleId(saleId);
+			session.saveOrUpdate(soldItem);
+		}
+
+		session.getTransaction().commit();
+		session.clear();
+		} catch (Exception e){
+			session.getTransaction().rollback();
+		}
+	
+		model.getWarehouseTableModel().fireTableDataChanged();
+		
 	}
 
 	public void cancelCurrentPurchase() throws VerificationFailedException {				

@@ -3,36 +3,34 @@
     package ee.ut.math.tvt.salessystem.ui.tabs;
      
     import java.awt.Color;
-    import java.awt.Component;
-    import java.awt.GridBagConstraints;
-    import java.awt.GridBagLayout;
-    import java.awt.GridLayout;
-    import java.awt.event.ActionEvent;
-    import java.awt.event.ActionListener;
-    import java.beans.PropertyChangeEvent;
-    import java.beans.PropertyChangeListener;
-    import java.text.NumberFormat;
-    import java.util.List;
-     
-    import javax.swing.BorderFactory;
-    import javax.swing.JButton;
-    import javax.swing.JFormattedTextField;
-    import javax.swing.JLabel;
-    import javax.swing.JOptionPane;
-    import javax.swing.JPanel;
-    import javax.swing.JTextField;
-    import javax.swing.event.DocumentEvent;
-    import javax.swing.event.DocumentListener;
-    import javax.swing.JComponent;
-     
-    import org.apache.log4j.Logger;
-     
-    import ee.ut.math.tvt.salessystem.domain.controller.SalesDomainController;
-    import ee.ut.math.tvt.salessystem.domain.data.SoldItem;
-    import ee.ut.math.tvt.salessystem.domain.data.StockItem;
-    import ee.ut.math.tvt.salessystem.domain.exception.VerificationFailedException;
-    import ee.ut.math.tvt.salessystem.ui.model.SalesSystemModel;
-    import ee.ut.math.tvt.salessystem.ui.panels.PurchaseItemPanel;
+import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.NumberFormat;
+import java.util.List;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JFormattedTextField;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+
+import org.apache.log4j.Logger;
+
+import ee.ut.math.tvt.salessystem.domain.controller.SalesDomainController;
+import ee.ut.math.tvt.salessystem.domain.data.SoldItem;
+import ee.ut.math.tvt.salessystem.domain.data.StockItem;
+import ee.ut.math.tvt.salessystem.domain.exception.VerificationFailedException;
+import ee.ut.math.tvt.salessystem.ui.model.SalesSystemModel;
+import ee.ut.math.tvt.salessystem.ui.panels.PurchaseItemPanel;
      
     /**
      * Encapsulates everything that has to do with the purchase tab (the tab
@@ -178,6 +176,7 @@
             	acceptButton.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
+                    	
                         JOptionPane pane = getOptionPane((JComponent)e.getSource());
                         pane.setValue(acceptButton);
                     }
@@ -223,6 +222,7 @@
             private void deductGoods() {
                     List<SoldItem> soldGoods = model.getCurrentPurchaseTableModel()
                                     .getTableRows();
+                    
                     for (SoldItem soldItem : soldGoods) {
                             StockItem stockItem = model.getWarehouseTableModel().getItemByName(
                                             soldItem.getName());
