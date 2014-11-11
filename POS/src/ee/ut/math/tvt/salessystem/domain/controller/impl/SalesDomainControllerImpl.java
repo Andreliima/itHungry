@@ -18,10 +18,11 @@ import org.hibernate.Session;
 @SuppressWarnings("unchecked")
 public class SalesDomainControllerImpl implements SalesDomainController {
 	
+	private Session session = HibernateUtil.currentSession();
 	public void submitCurrentPurchase(List<SoldItem> goods) throws VerificationFailedException {
 		// Let's assume we have checked and found out that the buyer is underaged and
 		// cannot buy chupa-chups
-		throw new VerificationFailedException("Underaged!");
+		//throw new VerificationFailedException("Underaged!");
 		// XXX - Save purchase
 	}
 
@@ -36,20 +37,22 @@ public class SalesDomainControllerImpl implements SalesDomainController {
 
 	public List<StockItem> loadWarehouseState() {
 		// XXX mock implementation
-		Session session = HibernateUtil.currentSession();
-		
 		List<StockItem> dataset = session.createQuery("from StockItem").list();
 				
 		return dataset;
 	}
 
 	public List<HistoryItem> loadHistoryState(){
-		Session session = HibernateUtil.currentSession();
-		
 		List<HistoryItem> dataset = session.createQuery("from HistoryItem").list();
 				
 		return dataset;
 	}
+	
+	public List<SoldItem> loadSoldItems(){
+		List<SoldItem> dataset = session.createQuery("from SoldItem").list();
+		return dataset;
+	}
+	
 	
 	// End current database session.
 	public void endSession() {

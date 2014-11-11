@@ -1,40 +1,34 @@
 package ee.ut.math.tvt.salessystem.ui.tabs;
 
-import ee.ut.math.tvt.salessystem.domain.data.SoldItem;
-import ee.ut.math.tvt.salessystem.domain.data.StockItem;
-import ee.ut.math.tvt.salessystem.ui.model.SalesSystemModel;
-
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.ComponentOrientation;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.NoSuchElementException;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-
-import org.apache.log4j.Logger;
+import java.util.NoSuchElementException;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.JFormattedTextField;
-import javax.swing.table.JTableHeader;
-import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
-import javax.swing.text.JTextComponent;
-import javax.swing.text.MaskFormatter;
-import javax.swing.JComponent;
+import javax.swing.table.JTableHeader;
 
-import java.lang.Runnable;
+import org.apache.log4j.Logger;
+import org.hibernate.Session;
+
+import ee.ut.math.tvt.salessystem.domain.data.StockItem;
+import ee.ut.math.tvt.salessystem.ui.model.SalesSystemModel;
+import ee.ut.math.tvt.salessystem.util.HibernateUtil;
 
 
 public class StockTab {
@@ -221,6 +215,7 @@ public class StockTab {
    */
   public void addItemEventHandler() {
 	  // Add chosen item to the warehouse.
+	  Session session = HibernateUtil.currentSession();
 	  if (!nameField.getText().isEmpty()) {
 //		  log.info(nameField.getText());
 		  StockItem stockItem = getStockItemByName((String)nameField.getText());
@@ -232,10 +227,18 @@ public class StockTab {
 			  } catch (NumberFormatException ex) {
 				  barCode = -1L;
 			  }
-//			  log.info(barCode);
 			  if((stockItem.getId().equals(barCode) && stockItem.getName().equals(nameField.getText()) && stockItem.getPrice() == (double)priceField.getValue()) || 
 				(((int)barCodeField.getValue()) == 0 && stockItem.getName().equals(nameField.getText()) && stockItem.getPrice() == (double)priceField.getValue())){
 				  stockItem.setQuantity(stockItem.getQuantity() + (int)quantityField.getValue());
+			  }
+			  try
+			  {
+			  session.beginTransaction();
+			  session.save(stockItem);
+			  session.getTransaction().commit();
+			  session.clear();
+			  }catch(Exception e) {
+				  session.getTransaction().rollback();
 			  }
 		  }
 		  else {
@@ -268,8 +271,17 @@ public class StockTab {
 			  } catch (NumberFormatException ex) {
 				  quantity = 1;
 			  }
+			  try {
+			  session.beginTransaction();
+			  session.save(new StockItem(barCode, nameField.getText(), descriptionField.getText(), price, quantity));
+			  session.getTransaction().commit();
+			  session.clear();
 			  model.getWarehouseTableModel().addItem(new StockItem(barCode, nameField.getText(), descriptionField.getText(), price, quantity));
-		  }
+			  } catch (Exception e) {
+				  log.warn("Rollback. Failed to create new stock item.");
+				  session.getTransaction().rollback();
+			  }
+			 }
 	  }else if(((int)barCodeField.getValue()) != 0){
 		  Long barCode;
 		  try {
@@ -284,7 +296,19 @@ public class StockTab {
 				  stockItem.setQuantity(stockItem.getQuantity() + (int)quantityField.getValue());
 			  }
 		  }
+		  try {
+		  session.beginTransaction();
+		  session.save(stockItem);
+		  session.getTransaction().commit();
+		  session.clear();
+		  log.info("Changed quantity");
+		  }
+		  catch (Exception e){
+			  session.getTransaction().rollback();
+			  log.error("Changing quantity failed. Rollback.");
+		  }
 	  }
+
 	  model.getWarehouseTableModel().fireTableDataChanged();
 	  purchaseTab.getPurchasePane().updateData();
 	  

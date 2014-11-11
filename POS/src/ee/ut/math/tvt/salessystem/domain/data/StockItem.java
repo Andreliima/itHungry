@@ -20,7 +20,6 @@ public class StockItem implements Cloneable, DisplayableItem {
 	private static final Logger log = Logger.getLogger(StockItem.class);
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="ID")
     private Long id;
 	
@@ -48,13 +47,6 @@ public class StockItem implements Cloneable, DisplayableItem {
         this.name = name;
         this.description = desc;
         this.price = price;
-        Session session = HibernateUtil.currentSession();
-        session.beginTransaction();
-//        if(session.get(this.name, id) == null) log.info("Kirjet ei leitud");
-//        else log.info("Kirje on olemas");
-        session.saveOrUpdate(this);
-        session.getTransaction().commit();
-//        session.flush();
     }
     
     public StockItem(Long id, String name, String desc, double price, int quantity) {
@@ -63,15 +55,7 @@ public class StockItem implements Cloneable, DisplayableItem {
         this.description = desc;
         this.price = price;
         this.quantity = quantity;
-        Session session = HibernateUtil.currentSession();
-        session.beginTransaction();
-//        if(session.get(this.name, id) == null) log.info("Kirjet ei leitud");
-//        else log.info("Kirjet on olemas");
-        session.saveOrUpdate(this);
-        session.getTransaction().commit();
-//        session.flush();
     }
-
     /**
      * Constructs new  <code>StockItem</code>.
      */
@@ -116,13 +100,6 @@ public class StockItem implements Cloneable, DisplayableItem {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
-        Session session = HibernateUtil.currentSession();
-        session.beginTransaction();
-//        if(session.get(this.name, id) == null) log.info("Kirjet ei leitud");
-//        else log.info("Kirjed on olemas");
-        session.saveOrUpdate(this);
-        session.getTransaction().commit();
-        session.flush();
     }
 
     public String toString() {

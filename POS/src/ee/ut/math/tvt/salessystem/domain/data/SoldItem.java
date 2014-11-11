@@ -8,7 +8,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
 import ee.ut.math.tvt.salessystem.util.HibernateUtil;
+
 import org.hibernate.Session;
 
 /**
@@ -30,6 +32,10 @@ public class SoldItem implements Cloneable, DisplayableItem {
     @Column(name = "NAME")
     private String name;
     
+    @ManyToOne
+    @JoinColumn(name = "SALE_ID", nullable = false)
+    private HistoryItem historyItem;
+    
     @Column(name = "QUANTITY")
     private Integer quantity;
     
@@ -41,14 +47,20 @@ public class SoldItem implements Cloneable, DisplayableItem {
         this.name = stockItem.getName();
         this.price = stockItem.getPrice();
         this.quantity = quantity;
-        Session session = HibernateUtil.currentSession();
-        session.beginTransaction();
-        session.saveOrUpdate(this);
-        session.getTransaction().commit();
     }
     
     
-    public Long getId() {
+    public HistoryItem getHistoryItem() {
+		return historyItem;
+	}
+
+
+	public void setHistoryItem(HistoryItem historyItem) {
+		this.historyItem = historyItem;
+	}
+
+
+	public Long getId() {
         return id;
     }
     

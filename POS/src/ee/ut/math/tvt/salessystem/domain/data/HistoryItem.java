@@ -1,54 +1,72 @@
 package ee.ut.math.tvt.salessystem.domain.data;
 
-import ee.ut.math.tvt.salessystem.ui.model.PurchaseInfoTableModel;
-import ee.ut.math.tvt.salessystem.util.HibernateUtil;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
+import org.apache.log4j.Logger;
 import org.hibernate.Session;
+
+import ee.ut.math.tvt.salessystem.ui.model.PurchaseInfoTableModel;
+import ee.ut.math.tvt.salessystem.util.HibernateUtil;
 
 @Entity
 @Table(name = "HISTORYITEM")
 public class HistoryItem implements Cloneable, DisplayableItem {
-
+	
+	private static final Logger log = Logger.getLogger(HistoryItem.class);
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="ID")
     private Long id;
     
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "DATE", nullable = false, updatable = false)
-    private Date date;
-
+    //@Temporal(TemporalType.TIMESTAMP)
+    //@Column(name = "DATE", nullable = false, updatable = false)
+    @Column(name = "DATE")
+    private Date date;	
+    
+    @OneToMany(mappedBy = "historyItem")
+    private Set<SoldItem> soldItems;
+    
+	
 	@Column(name = "TOTALCOST")
     private double totalCost;
 	
-    private PurchaseInfoTableModel table;
+	@Transient
+	private PurchaseInfoTableModel table;
     // TODO: Connect through SALE_ID
     
+	
+	
+    public HistoryItem(Long id, Date date, double totalCost) {
+    	this.id = id;
+    	this.date = date;
+    	this.totalCost = totalCost;
+    }
+    public HistoryItem()
+    {
+    	
+    }
+    
+	
     public HistoryItem(PurchaseInfoTableModel table) {
         this.table = new PurchaseInfoTableModel();
         this.table.populateWithData(table.getTableRows());
         this.date = new Date();
         this.totalCost = totalCost();
-        Session session = HibernateUtil.currentSession();
-        session.beginTransaction();
-        session.saveOrUpdate(this);
-        session.getTransaction().commit();
     }
+    
     
     public float totalCost(){
     	float cost = 0;
@@ -59,10 +77,10 @@ public class HistoryItem implements Cloneable, DisplayableItem {
     	return cost;
     }
     
+   
     public PurchaseInfoTableModel getTable(){
     	return table;
     }
-    
     public Long getId() {
         return id;
     }
@@ -86,6 +104,24 @@ public class HistoryItem implements Cloneable, DisplayableItem {
     public double getCost() {
         return totalCost;
     }
+    public Set<SoldItem> getSoldItems() {
+		return soldItems;
+	}
+	public void setSoldItems(Set<SoldItem> soldItems) {
+		this.soldItems = soldItems;
+	}
+	public double getTotalCost() {
+		return totalCost;
+	}
+	public void setTotalCost(double totalCost) {
+		this.totalCost = totalCost;
+	}
+	public void setDate(Date date) {
+		this.date = date;
+	}
+	public void setTable(PurchaseInfoTableModel table) {
+		this.table = table;
+	}
 
 	@Override
 	public String getName() {
