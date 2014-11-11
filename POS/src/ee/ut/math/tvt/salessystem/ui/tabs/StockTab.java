@@ -234,7 +234,7 @@ public class StockTab {
 			  try
 			  {
 			  session.beginTransaction();
-			  session.save(stockItem);
+			  session.saveOrUpdate(stockItem);
 			  session.getTransaction().commit();
 			  session.clear();
 			  }catch(Exception e) {
@@ -273,7 +273,7 @@ public class StockTab {
 			  }
 			  try {
 			  session.beginTransaction();
-			  session.save(new StockItem(barCode, nameField.getText(), descriptionField.getText(), price, quantity));
+			  session.saveOrUpdate(new StockItem(barCode, nameField.getText(), descriptionField.getText(), price, quantity));
 			  session.getTransaction().commit();
 			  session.clear();
 			  model.getWarehouseTableModel().addItem(new StockItem(barCode, nameField.getText(), descriptionField.getText(), price, quantity));
@@ -292,13 +292,14 @@ public class StockTab {
 		  StockItem stockItem = getStockItemById(barCode);
 //		  log.info(stockItem);
 		  if (stockItem != null) {
-			  if((stockItem.getId().equals(barCode) && stockItem.getPrice() == (double)priceField.getValue())) {
+			  
+			  if(stockItem.getId().equals(barCode)) {
 				  stockItem.setQuantity(stockItem.getQuantity() + (int)quantityField.getValue());
 			  }
 		  }
 		  try {
 		  session.beginTransaction();
-		  session.save(stockItem);
+		  session.saveOrUpdate(stockItem);
 		  session.getTransaction().commit();
 		  session.clear();
 		  log.info("Changed quantity");
