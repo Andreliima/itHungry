@@ -6,7 +6,9 @@
 	<property file="build.properties"/>
 	<property name="build.dir" value="${basedir}/build"/>
 	<property name="build.classes.dir" value="${build.dir}/classes"/>
+	<property name="build.test.dir" value="${build.dir}/test" />
 	<property name="src.dir" value="${basedir}/src"/>
+	<property name="test.dir" value="${basedir}/test"/>
 	<property name="dist.dir" value="${basedir}/dist"/>
 	<property name="conf.dir" value="${basedir}/conf"/>
 	<property name="doc.dir" value="${build.dir}/doc"/>
@@ -51,7 +53,8 @@
 		    <include name="*.jar"/>
 		</fileset>
 	</path>
-
+	
+	
 	<!-- Definitions of runnable ant targets.
          Run them from the command line by executing "ant [targetname]"  -->
 
@@ -116,10 +119,21 @@
 		</exec>
 	</target>
 	
-	<target name="build" description="Build the system">
+	<path id="test-classpath">
+		<fileset dir="${lib.dir}">
+			<include name="*.jar"/>
+		</fileset>
+	    <pathelement path="${build.classes.dir}/" />
+		<pathelement path="${build.test.dir}/" />
+	</path>
+	
+	<target name="init" description="Initialize">
 		<mkdir dir="${build.dir}"/>
 		<mkdir dir="${build.classes.dir}"/>
-		
+		<mkdir dir="${build.test.dir}"/>
+	</target>
+	
+	<target name="build" depends="init" description="Build the system">
 		
 		<javac
             srcdir="${src.dir}"
@@ -133,6 +147,38 @@
 			includeantruntime="false">
 			<classpath refid="compile.classpath"/>
 		</javac>
+
+	</target>
+	
+	<target name="build-tests" depends="build" description="Build the system">
+		<javac
+            srcdir="${test.dir}"
+            destdir="${build.test.dir}"
+            debug="true"
+            debuglevel="lines,vars,source"
+            encoding="utf-8"
+            compiler="modern"
+            target="1.7"
+            source="1.7"
+			includeantruntime="false">
+			<classpath refid="compile.classpath" />
+			<classpath>
+				<pathelement path="${build.classes.dir}" />
+			</classpath>
+		</javac>
+	</target>
+	
+	<target name="test" depends="build-tests" description="Run the template application">
+
+		<junit>
+			<classpath refid="test-classpath" />
+
+			<formatter type="brief" usefile="false" />
+			<batchtest>
+				<fileset dir="${build.test.dir}" includes="**/*.class" />
+			</batchtest>
+		</junit>
+
 
 	</target>
 	

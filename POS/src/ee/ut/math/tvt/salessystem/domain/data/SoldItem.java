@@ -51,7 +51,9 @@ public class SoldItem implements Cloneable, DisplayableItem, Serializable {
         this.name = stockItem.getName();
         this.price = stockItem.getPrice();
         this.quantity = quantity;
-        
+        if (quantity < 0) {
+        	throw new IllegalArgumentException("SoldItem argument error: Quantity can't be < 0");
+        }
     }
     
     public SoldItem(StockItem stockItem, HistoryItem historyItem, int quantity) {

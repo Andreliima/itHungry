@@ -48,14 +48,6 @@ public class StockItem implements Cloneable, DisplayableItem, Serializable {
         this.name = name;
         this.description = desc;
         this.price = price;
-        Session session = HibernateUtil.currentSession();
-        session.beginTransaction();
-//        if(session.get(this.name, id) == null) log.info("Kirjet ei leitud");
-//        else log.info("Kirje on olemas");
-        session.saveOrUpdate(this);
-        session.getTransaction().commit();
-//        session.flush();
-        HibernateUtil.closeSession();
     }
     
     public StockItem(Long id, String name, String desc, double price, int quantity) {
@@ -64,14 +56,6 @@ public class StockItem implements Cloneable, DisplayableItem, Serializable {
         this.description = desc;
         this.price = price;
         this.quantity = quantity;
-        Session session = HibernateUtil.currentSession();
-        session.beginTransaction();
-//        if(session.get(this.name, id) == null) log.info("Kirjet ei leitud");
-//        else log.info("Kirjet on olemas");
-        session.saveOrUpdate(this);
-        session.getTransaction().commit();
-//        session.flush();
-        HibernateUtil.closeSession();
     }
 
     /**

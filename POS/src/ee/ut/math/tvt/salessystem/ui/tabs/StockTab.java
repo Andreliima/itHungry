@@ -3,6 +3,7 @@ package ee.ut.math.tvt.salessystem.ui.tabs;
 import ee.ut.math.tvt.salessystem.domain.data.SoldItem;
 import ee.ut.math.tvt.salessystem.domain.data.StockItem;
 import ee.ut.math.tvt.salessystem.ui.model.SalesSystemModel;
+import ee.ut.math.tvt.salessystem.util.HibernateUtil;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -17,6 +18,7 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Session;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -270,6 +272,11 @@ public class StockTab {
 				  quantity = 1;
 			  }
 			  model.getWarehouseTableModel().addItem(new StockItem(barCode, nameField.getText(), descriptionField.getText(), price, quantity));
+		      Session session = HibernateUtil.currentSession();
+			  session.beginTransaction();
+		      session.saveOrUpdate(this);
+		      session.getTransaction().commit();
+		      HibernateUtil.closeSession();
 		  }
 	  }else if(((int)barCodeField.getValue()) != 0){
 		  Long barCode;
