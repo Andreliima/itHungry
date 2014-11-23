@@ -5,6 +5,7 @@ import java.util.NoSuchElementException;
 import org.apache.log4j.Logger;
 
 import ee.ut.math.tvt.salessystem.domain.data.StockItem;
+import ee.ut.math.tvt.salessystem.domain.exception.VerificationFailedException;
 
 /**
  * Stock item table model.
@@ -37,19 +38,29 @@ public class StockTableModel extends SalesSystemTableModel<StockItem> {
 	 * Add new stock item to table. If there already is a stock item with
 	 * same id, then existing item's quantity will be increased.
 	 * @param stockItem
+	 * @throws VerificationFailedException 
 	 */
-	public void addItem(final StockItem stockItem) {
+	public void addItem(final StockItem stockItem)
+			throws VerificationFailedException {
 		try {
 			StockItem item = getItemById(stockItem.getId());
+			if (!stockItem.getName().equals(item.getName())) {
+				throw new VerificationFailedException(
+						"Id exists, different name");
+			}
 			item.setQuantity(item.getQuantity() + stockItem.getQuantity());
 			log.debug("Found existing item " + stockItem.getName()
 					+ " increased quantity by " + stockItem.getQuantity());
-		}
-		catch (NoSuchElementException e) {
-			rows.add(stockItem);
-			
-			log.debug("Added " + stockItem.getName()
-					+ " quantity of " + stockItem.getQuantity());
+		} catch (NoSuchElementException e) {
+			try {
+				StockItem item = getItemByName(stockItem.getName());
+				throw new VerificationFailedException("Name not unique!");
+			} catch (NoSuchElementException e1) {
+				rows.add(stockItem);
+
+				log.debug("Added " + stockItem.getName() + " quantity of "
+						+ stockItem.getQuantity());
+			}
 		}
 		fireTableDataChanged();
 	}

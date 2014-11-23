@@ -47,6 +47,8 @@ public class StockTab {
   private JSpinner priceField;
   private JSpinner quantityField;
   private JButton addItem;
+  private Session session = HibernateUtil.currentSession();
+  
   
   private static final Logger log = Logger.getLogger(PurchaseTab.class);
   
@@ -235,10 +237,20 @@ public class StockTab {
 			  } catch (NumberFormatException ex) {
 				  barCode = -1L;
 			  }
-//			  log.info(barCode);
 			  if((stockItem.getId().equals(barCode) && stockItem.getName().equals(nameField.getText()) && stockItem.getPrice() == (double)priceField.getValue()) || 
 				(((int)barCodeField.getValue()) == 0 && stockItem.getName().equals(nameField.getText()) && stockItem.getPrice() == (double)priceField.getValue())){
-				  stockItem.setQuantity(stockItem.getQuantity() + (int)quantityField.getValue());
+				  try {
+					  stockItem.setQuantity(stockItem.getQuantity() + (int)quantityField.getValue());
+					  session.beginTransaction();
+				      session.saveOrUpdate(stockItem);
+				      session.getTransaction().commit();
+					  model.getWarehouseTableModel().fireTableDataChanged();
+					  purchaseTab.getPurchasePane().updateData();
+				  } catch(Exception e) {
+			    	  log.error("Error in adding stock quantity");
+			    	  session.getTransaction().rollback();
+				      session.flush();
+				  }
 			  }
 		  }
 		  else {
@@ -271,12 +283,20 @@ public class StockTab {
 			  } catch (NumberFormatException ex) {
 				  quantity = 1;
 			  }
-			  model.getWarehouseTableModel().addItem(new StockItem(barCode, nameField.getText(), descriptionField.getText(), price, quantity));
-		      Session session = HibernateUtil.currentSession();
-			  session.beginTransaction();
-		      session.saveOrUpdate(this);
-		      session.getTransaction().commit();
-		      HibernateUtil.closeSession();
+	    	  
+	    	  try {
+	    		  stockItem = new StockItem(barCode, nameField.getText(), descriptionField.getText(), price, quantity);
+				  session.beginTransaction();
+			      session.saveOrUpdate(stockItem);
+			      session.getTransaction().commit();
+				  model.getWarehouseTableModel().addItem(new StockItem(barCode, nameField.getText(), descriptionField.getText(), price, quantity));
+				  model.getWarehouseTableModel().fireTableDataChanged();
+				  purchaseTab.getPurchasePane().updateData();
+			      session.flush();
+	    	  }catch (Exception e) {
+		    	  log.error("Error in adding stock item");
+		    	  session.getTransaction().rollback();
+		      }
 		  }
 	  }else if(((int)barCodeField.getValue()) != 0){
 		  Long barCode;
@@ -288,13 +308,23 @@ public class StockTab {
 		  StockItem stockItem = getStockItemById(barCode);
 //		  log.info(stockItem);
 		  if (stockItem != null) {
-			  if((stockItem.getId().equals(barCode) && stockItem.getPrice() == (double)priceField.getValue())) {
-				  stockItem.setQuantity(stockItem.getQuantity() + (int)quantityField.getValue());
+			  if((stockItem.getId().equals(barCode) && stockItem.getPrice() == (Double)priceField.getValue())) {
+				  try {
+					  stockItem.setQuantity(stockItem.getQuantity() + (int)quantityField.getValue());
+					  session.beginTransaction();
+				      session.saveOrUpdate(stockItem);
+				      session.getTransaction().commit();
+					  model.getWarehouseTableModel().fireTableDataChanged();
+					  purchaseTab.getPurchasePane().updateData();
+				      session.flush();
+				  } catch(Exception e) {
+			    	  log.error("Error in adding stock quantity");
+			    	  session.getTransaction().rollback();
+				  }
+				  
 			  }
 		  }
 	  }
-	  model.getWarehouseTableModel().fireTableDataChanged();
-	  purchaseTab.getPurchasePane().updateData();
 	  
   }
 
