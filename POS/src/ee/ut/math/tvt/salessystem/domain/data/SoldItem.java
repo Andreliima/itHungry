@@ -62,6 +62,9 @@ public class SoldItem implements Cloneable, DisplayableItem, Serializable {
         this.price = stockItem.getPrice();
         this.quantity = quantity;
         this.historyItem = historyItem;
+        if (quantity < 0) {
+        	throw new IllegalArgumentException("SoldItem argument error: Quantity can't be < 0");
+        }
         
     }
     
@@ -106,7 +109,11 @@ public class SoldItem implements Cloneable, DisplayableItem, Serializable {
     }
     
     public void setQuantity(Integer quantity) {
+        if (quantity < 0) {
+        	throw new IllegalArgumentException("SoldItem argument error: Quantity can't be < 0");
+        }
         this.quantity = quantity;
+        
     }
 
     public double getSum() {

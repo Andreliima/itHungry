@@ -58,10 +58,6 @@ public class PurchaseInfoTableModel extends SalesSystemTableModel<SoldItem> {
      * Add new StockItem to table.
      */
     public void addItem(final SoldItem item) {
-        /**
-         * XXX In case such stockItem already exists increase the quantity of the
-         * existing stock.
-         */
         
         rows.add(item);
         log.debug("Added " + item.getName() + " quantity of " + item.getQuantity());

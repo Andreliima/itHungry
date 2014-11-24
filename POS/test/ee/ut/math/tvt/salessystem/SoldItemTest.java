@@ -29,4 +29,10 @@ public class SoldItemTest {
 		assertEquals(soldItem.getSum(), 0, 0.0001);
 		
 	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void testNegativeQuantityThrowException() {
+		SoldItem soldItem = new SoldItem(stockItem, -1);
+	}
+	
 }

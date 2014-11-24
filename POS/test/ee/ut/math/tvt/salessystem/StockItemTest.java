@@ -36,4 +36,9 @@ public class StockItemTest {
 		assertEquals(item1.getColumn(3), item1.getQuantity());
 	}
 	
+	@Test(expected = IllegalArgumentException.class)
+	public void testGetColumnOutOfIndexThrowException() {
+		item1.getColumn(5);
+	}
+	
 }

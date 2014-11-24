@@ -44,6 +44,7 @@ public class HistoryItemTest {
 		assertEquals(0, historyItem.totalCost(), 0.0001);
 	}
 	
+	
 	@Test
 	public void testGetSumWithOneItem() {
 		List<SoldItem> items = new ArrayList<SoldItem>();

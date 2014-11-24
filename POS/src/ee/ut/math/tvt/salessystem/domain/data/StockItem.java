@@ -6,9 +6,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
 import ee.ut.math.tvt.salessystem.util.HibernateUtil;
+
 import org.hibernate.Session;
 import org.apache.log4j.Logger;
+
 import java.io.Serializable;
 
 /**
@@ -102,14 +105,6 @@ public class StockItem implements Cloneable, DisplayableItem, Serializable {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
-        Session session = HibernateUtil.currentSession();
-        session.beginTransaction();
-//        if(session.get(this.name, id) == null) log.info("Kirjet ei leitud");
-//        else log.info("Kirjed on olemas");
-        session.saveOrUpdate(this);
-        session.getTransaction().commit();
-        session.flush();
-        HibernateUtil.closeSession();
     }
 
     public String toString() {
@@ -127,7 +122,7 @@ public class StockItem implements Cloneable, DisplayableItem, Serializable {
             case 1: return name;
             case 2: return new Double(price);
             case 3: return new Integer(quantity);
-            default: throw new RuntimeException("invalid column!");
+            default: throw new IllegalArgumentException("invalid column!");
         }
     }
     
