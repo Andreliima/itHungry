@@ -8,7 +8,9 @@ import org.junit.Test;
 import ee.ut.math.tvt.salessystem.domain.data.SoldItem;
 import ee.ut.math.tvt.salessystem.domain.data.StockItem;
 
-
+/*
+ * Moved this class to *.ui.model package to be able to access protected classes.
+ */
 public class PurchaseInfoTableModelTest {
 	
 	private PurchaseInfoTableModel model;

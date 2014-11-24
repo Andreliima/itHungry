@@ -28,7 +28,15 @@ public  class HistoryTableModel extends
     private long sale_id = 0L;
 
     protected List<HistoryItem> rows;
-    protected final String[] headers;
+    public List<HistoryItem> getRows() {
+		return rows;
+	}
+
+	public void setRows(List<HistoryItem> rows) {
+		this.rows = rows;
+	}
+
+	protected final String[] headers;
     
     private static final Logger log = Logger.getLogger(SalesSystemModel.class);
 
@@ -36,6 +44,11 @@ public  class HistoryTableModel extends
         this.headers = headers;
         Session session = HibernateUtil.currentSession();
         rows = session.createQuery("from HistoryItem").list();
+    }
+    
+    public HistoryTableModel() {
+    	this.headers = new String[]{"Date", "Time", "Total cost"};
+    	rows = new ArrayList<HistoryItem>();
     }
 
     /**

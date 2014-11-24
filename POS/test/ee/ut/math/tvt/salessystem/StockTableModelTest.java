@@ -34,12 +34,11 @@ public class StockTableModelTest {
 		model.addItem(new StockItem(50L, "Porgand", "", 50, 1));
 	}
 	
-	/*// Pole kindel, mida siin tahetakse.
+	// hasEnoughInStock not testable with current code.
+	/*
 	@Test
-	public void testHasEnoughInStock() {
-		assertEquals(model.getRowCount(), 0);
-		model.addItem(item1);
-		assertEquals(model.getRowCount(), 1);
+	public void testHasEnoughInStock() throws VerificationFailedException {
+		model = new StockTableModel();
 	}
 	*/
 	@Test

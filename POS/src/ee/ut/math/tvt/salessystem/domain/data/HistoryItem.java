@@ -20,6 +20,11 @@ import ee.ut.math.tvt.salessystem.ui.model.PurchaseInfoTableModel;
 @Table(name = "HISTORYITEM")
 public class HistoryItem  extends AbstractTableModel implements Cloneable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6794917670756529051L;
+
 	private static final Logger log = Logger.getLogger(PurchaseInfoTableModel.class);
 	
 	@Id
