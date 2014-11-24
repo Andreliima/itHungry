@@ -16,6 +16,8 @@ public class PurchaseInfoTableModel extends SalesSystemTableModel<SoldItem> {
 	private static final Logger log = Logger.getLogger(PurchaseInfoTableModel.class);
 
 	private SalesSystemModel model;
+	
+	private Sale currentSale;
 
     public PurchaseInfoTableModel() {
         super(new String[] { "Id", "Name", "Price", "Quantity", "Sum"});
@@ -136,6 +138,10 @@ public class PurchaseInfoTableModel extends SalesSystemTableModel<SoldItem> {
     public void showSale(Sale sale) {
         this.rows = new ArrayList<SoldItem>(sale.getSoldItems());
         fireTableDataChanged();
+    }
+    
+    public Sale getCurrentSale() {
+    	return currentSale;
     }
 
 }

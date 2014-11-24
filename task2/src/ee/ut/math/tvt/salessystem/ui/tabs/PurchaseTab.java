@@ -28,19 +28,12 @@ import org.apache.log4j.Logger;
 public class PurchaseTab {
 
     private static final Logger log = Logger.getLogger(PurchaseTab.class);
-
     private final SalesDomainController domainController;
-
     private JButton newPurchase;
-
     private JButton submitPurchase;
-
     private JButton cancelPurchase;
-
     private PurchaseItemPanel purchasePane;
-
     private SalesSystemModel model;
-
     private JFrame parent;
 
     public PurchaseTab(SalesDomainController controller, SalesSystemModel model,
@@ -165,9 +158,7 @@ public class PurchaseTab {
 
             log.debug("Contents of the current basket:\n"
                     + model.getCurrentPurchaseTableModel());
-            domainController.submitCurrentPurchase(
-                    model.getCurrentPurchaseTableModel().getTableRows(),
-                    model.getSelectedClient());
+            domainController.registerSale(model.getCurrentPurchaseTableModel().getCurrentSale());
             endSale();
             model.getCurrentPurchaseTableModel().clear();
         } catch (VerificationFailedException e1) {
