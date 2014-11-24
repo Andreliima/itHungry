@@ -1,34 +1,20 @@
 package ee.ut.math.tvt.salessystem.domain.data;
 
 
-import ee.ut.math.tvt.salessystem.ui.model.PurchaseInfoTableModel;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
-import java.io.Serializable;
-import javax.swing.table.AbstractTableModel;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.swing.table.AbstractTableModel;
 
-import ee.ut.math.tvt.salessystem.util.HibernateUtil;
-
-import org.hibernate.Session;
 import org.apache.log4j.Logger;
+
+import ee.ut.math.tvt.salessystem.ui.model.PurchaseInfoTableModel;
 
 @Entity
 @Table(name = "HISTORYITEM")
@@ -54,6 +40,24 @@ public class HistoryItem  extends AbstractTableModel implements Cloneable {
     
     @Transient
     protected final String[] headers;
+    
+    public HistoryItem(Long id, String date, String time, List<SoldItem> rows) {
+    	this.id = id;
+    	this.date = date;
+    	this.time = time;
+    	this.rows = new ArrayList<SoldItem>(rows);
+    	this.totalCost = totalCost();
+    	this.headers = new String[] { "Id", "Name", "Price", "Quantity", "Sum"};
+    }
+ 
+    public HistoryItem(Long id, String date, String time) {
+    	this.id = id;
+    	this.date = date;
+    	this.time = time;
+    	this.rows = new ArrayList<SoldItem>();
+    	this.totalCost = totalCost();
+    	this.headers = new String[] { "Id", "Name", "Price", "Quantity", "Sum"};
+    }    
     
     public HistoryItem(Long id, String date, String time, double totalCost) {
         this.id = id;
@@ -116,6 +120,7 @@ public class HistoryItem  extends AbstractTableModel implements Cloneable {
     
     public void addSoldItem(SoldItem item){
     	rows.add(item);
+    	totalCost = totalCost();
     }
     
     public List<SoldItem> getTableRows(){

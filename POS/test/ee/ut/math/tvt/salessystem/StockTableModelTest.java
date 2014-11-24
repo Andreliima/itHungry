@@ -14,7 +14,6 @@ import ee.ut.math.tvt.salessystem.ui.model.StockTableModel;
 import ee.ut.math.tvt.salessystem.ui.tabs.PurchaseTab;
 
 public class StockTableModelTest {
-	private static final Logger log = Logger.getLogger(StockTableModelTest.class);
 	private StockItem item1;
 	private StockItem item2;
 	private StockTableModel model;
