@@ -15,6 +15,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import ee.ut.math.tvt.salessystem.domain.data.SoldItem;
+
 /**
  * Sale object. Contains client and sold items.
  */
@@ -35,6 +37,11 @@ public class Sale implements DisplayableItem {
 
     /** Empty constructors are used by hibernate */
     public Sale() {
+    }
+    
+    public Sale(List<SoldItem> goods) {
+        this.soldItems = new HashSet<SoldItem>(goods);
+        this.sellingTime = new Date();
     }
 
     public Sale(Client client, List<SoldItem> goods) {
