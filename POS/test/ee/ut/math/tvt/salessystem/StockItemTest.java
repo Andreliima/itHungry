@@ -10,7 +10,6 @@ import ee.ut.math.tvt.salessystem.domain.data.StockItem;
 public class StockItemTest {
 
 	private StockItem item1;
-	private StockItem item2;
 	
 	@Before
 	public void setUp() {
