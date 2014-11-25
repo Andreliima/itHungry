@@ -6,13 +6,6 @@ package ee.ut.math.tvt.salessystem.domain.exception;
 public class VerificationFailedException extends Exception {
 
 	private static final long serialVersionUID = 1L;
-
-	/**
-	 * Constructs new <code>VerificationFailedException</code>.
-	 */
-	public VerificationFailedException() {
-		super();
-	}
 	
 	/**
 	 * Constructs new <code>VerificationFailedException</code> with  with the specified detail message.
