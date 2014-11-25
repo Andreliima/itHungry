@@ -72,6 +72,7 @@ public class SalesDomainControllerImpl implements SalesDomainController {
 
         //sale.setId(null);
         sale.setSellingTime(new Date());
+        sale.setClient(model.getSelectedClient());
 
         // Reduce quantities of stockItems in warehouse
         for (SoldItem item : sale.getSoldItems()) {

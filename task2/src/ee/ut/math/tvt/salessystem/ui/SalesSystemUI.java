@@ -11,6 +11,8 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
@@ -80,14 +82,33 @@ public class SalesSystemUI extends JFrame {
   }
 
   private void drawWidgets() {
-    JTabbedPane tabbedPane = new JTabbedPane();
+	  JTabbedPane tabbedPane = new JTabbedPane();
 
-    tabbedPane.add("Point-of-sale", purchaseTab.draw());
-    tabbedPane.add("Warehouse", stockTab.draw());
-    tabbedPane.add("History", historyTab.draw());
-    tabbedPane.add("Clients", clientTab.draw());
+	  tabbedPane.add("Point-of-sale", purchaseTab.draw());
+	  tabbedPane.add("Warehouse", stockTab.draw());
+	  tabbedPane.add("History", historyTab.draw());
+	  tabbedPane.add("Clients", clientTab.draw());
 
-    getContentPane().add(tabbedPane);
+	  ChangeListener changeListener = new ChangeListener() {
+		  public void stateChanged(ChangeEvent changeEvent) {
+			  JTabbedPane sourceTabbedPane = (JTabbedPane) changeEvent.getSource();
+			  int index = sourceTabbedPane.getSelectedIndex();
+			  switch (index) {
+			  case 1:
+				  stockTab.refresh();
+				  return;
+			  case 2:
+				  historyTab.refresh();
+				  return;
+			  case 3:
+				  clientTab.refresh();
+				  return;
+			  }
+		  }
+	  };
+
+	  tabbedPane.addChangeListener(changeListener);
+	  getContentPane().add(tabbedPane);
   }
 
 }

@@ -151,6 +151,13 @@ public class PurchaseInfoTableModel extends SalesSystemTableModel<SoldItem> {
     	return currentSale;
     }
 
+    
+    public void clear() {
+    	currentSale = new Sale(new ArrayList<SoldItem>());
+        fireTableDataChanged();
+    }
+
+    
 	@Override
 	public List<SoldItem> getTableRows() {
 		return new ArrayList<SoldItem>(currentSale.getSoldItems());

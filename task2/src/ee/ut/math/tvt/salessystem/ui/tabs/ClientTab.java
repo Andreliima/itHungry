@@ -9,16 +9,22 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
+
 import ee.ut.math.tvt.salessystem.ui.model.SalesSystemModel;
 
 
 public class ClientTab {
+	
     
     private SalesSystemModel model;
     
     public ClientTab(SalesSystemModel model) {
         this.model = model;
     } 
+    
+    public void refresh(){
+    	model.updateClientTableModel();
+    }
     
     /**
      * The main entry-point method. Creates the tab.

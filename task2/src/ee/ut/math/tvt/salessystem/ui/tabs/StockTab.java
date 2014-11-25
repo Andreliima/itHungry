@@ -33,6 +33,10 @@ public class StockTab {
         this.model = model;
         this.controller = controller;
     }
+    
+    public void refresh(){
+    	model.updateStockTableModel();
+    }
 
     // warehouse stock tab - consists of a menu and a table
     public Component draw() {

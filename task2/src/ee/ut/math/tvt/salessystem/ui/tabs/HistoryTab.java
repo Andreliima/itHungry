@@ -15,11 +15,13 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 
+
 /**
  * Encapsulates everything that has to do with the purchase tab (the tab
  * labelled "History" in the menu).
  */
 public class HistoryTab {
+	
 
     private SalesSystemModel model;
 
@@ -27,6 +29,10 @@ public class HistoryTab {
 
     public HistoryTab(SalesSystemModel model) {
         this.model = model;
+    }
+    
+    public void refresh(){
+    	model.updateHistoryTableModel();
     }
 
     /**
